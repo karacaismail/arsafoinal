@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a1410">
+<title>arsam.net</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+
+<style>
+  :root{
+    --bg-1:#1a1410; --bg-2:#221912; --bg-3:#2b1f17; --bg-4:#34261b;
+    --soil-deep:#0f0a07; --grass:#7cb342; --grass-deep:#558b2f;
+    --gold:#cc9900; --warn:#e2723a;
+    --t1:#fff; --t2:rgba(255,255,255,.78); --t3:rgba(255,255,255,.55); --t4:rgba(255,255,255,.32);
+    --line-1:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14); --line-3:rgba(255,255,255,.22);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+
+  *{ -webkit-tap-highlight-color:transparent; }
+  html{ scroll-behavior:smooth; font-size:16px; }
+  body{
+    font-family:'Roboto',system-ui,sans-serif; font-weight:300;
+    font-size:1.5rem; line-height:1.6; color:var(--t1);
+    background:var(--bg-1); overflow-x:hidden;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+
+  /* Min 1.5rem zorunlu */
+  .text-xs,.text-sm,.text-base,.text-lg,.text-xl{ font-size:1.5rem !important; }
+  .text-2xl{ font-size:1.75rem !important; }
+  .text-3xl{ font-size:2rem !important; }
+
+  ::selection{ background:var(--grass); color:var(--bg-1); }
+  ::-webkit-scrollbar{ width:6px; }
+  ::-webkit-scrollbar-track{ background:var(--bg-1); }
+  ::-webkit-scrollbar-thumb{ background:var(--line-2); border-radius:3px; }
+
+  .sec{
+    min-height:100svh; min-height:100vh;
+    padding:6rem 1.5rem;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative; isolation:isolate;
+  }
+  @media(min-width:720px){ .sec{ padding:8rem 2.5rem; } }
+
+  .sec-bg-1{ background:var(--bg-1); }
+  .sec-bg-2{ background:linear-gradient(180deg,var(--bg-1) 0%,var(--bg-2) 14%,var(--bg-2) 86%,var(--bg-3) 100%); }
+  .sec-bg-3{ background:linear-gradient(180deg,var(--bg-3) 0%,var(--bg-2) 14%,var(--bg-2) 86%,var(--bg-3) 100%); }
+  .sec-bg-4{ background:linear-gradient(180deg,var(--bg-3) 0%,var(--bg-3) 86%,var(--bg-4) 100%); }
+  .sec-bg-5{ background:linear-gradient(180deg,var(--bg-4) 0%,var(--bg-3) 14%,var(--bg-3) 86%,var(--bg-2) 100%); }
+  .sec-bg-end{ background:linear-gradient(180deg,var(--bg-2) 0%,var(--soil-deep) 60%,#0a0705 100%); }
+
+  .wrap{ width:100%; max-width:720px; margin:0 auto; }
+  .wrap-wide{ width:100%; max-width:1120px; margin:0 auto; }
+
+  .eyebrow{
+    font-size:1.5rem; font-weight:500; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--gold); margin-bottom:1.5rem;
+    display:flex; align-items:center; gap:.75rem;
+  }
+  .eyebrow::before{ content:''; width:1.5rem; height:1px; background:var(--gold); }
+
+  h1{ font-size:clamp(2.5rem,9vw,4rem); font-weight:300; line-height:1.05; letter-spacing:-.025em; }
+  h2{ font-size:clamp(2rem,7vw,2.75rem); font-weight:300; line-height:1.1; letter-spacing:-.02em; margin-bottom:1.5rem; }
+  h3{ font-size:1.75rem; font-weight:500; line-height:1.3; }
+  .lead{ font-size:1.625rem; font-weight:300; line-height:1.55; color:var(--t2); }
+  .meta{ font-size:1.5rem; color:var(--t3); }
+  .accent{ color:var(--grass); }
+  .secondary{ color:var(--gold); }
+  .num{ font-variant-numeric:tabular-nums; }
+
+  .card{
+    background:rgba(255,255,255,.025); border:1px solid var(--line-1);
+    border-radius:.75rem; padding:1.75rem;
+    transition:border-color .3s var(--ease), background .3s var(--ease);
+  }
+  .card:hover{ border-color:var(--line-2); }
+  .card-grass{ border-color:rgba(124,179,66,.32); background:linear-gradient(180deg,rgba(124,179,66,.06),rgba(124,179,66,.02)); }
+  .card-gold{ border-color:rgba(204,153,0,.32); background:linear-gradient(180deg,rgba(204,153,0,.06),rgba(204,153,0,.02)); }
+  .card-warn{ border-color:rgba(226,114,58,.32); background:linear-gradient(180deg,rgba(226,114,58,.08),rgba(226,114,58,.02)); }
+
+  .reveal{ opacity:0; transform:translateY(24px); transition:opacity .9s var(--ease), transform .9s var(--ease); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+  .d1{ transition-delay:.1s; } .d2{ transition-delay:.2s; } .d3{ transition-delay:.3s; } .d4{ transition-delay:.4s; }
+
+  .fomo-card{ transition:opacity .6s var(--ease), filter .6s var(--ease), transform .6s var(--ease); }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:.75rem;
+    min-height:56px; padding:1rem 1.75rem; font-size:1.5rem; font-weight:500;
+    border-radius:.5rem; text-decoration:none; cursor:pointer; border:none;
+    transition:all .3s var(--ease);
+  }
+  .btn-primary{ background:var(--grass); color:#0f0a07; }
+  .btn-primary:hover{ background:var(--grass-deep); color:#fff; }
+  .btn-ghost{ background:transparent; color:var(--t1); border:1px solid var(--line-3); }
+  .btn-ghost:hover{ border-color:var(--gold); color:var(--gold); }
+
+  .nav-dots{ position:fixed; right:1rem; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:.75rem; z-index:50; }
+  .nav-dot{ width:10px; height:10px; border-radius:50%; background:var(--line-2); border:none; cursor:pointer; transition:all .2s var(--ease); }
+  .nav-dot.active{ background:var(--gold); transform:scale(1.4); }
+  @media(max-width:720px){ .nav-dots{ right:.5rem; gap:.5rem; } .nav-dot{ width:8px; height:8px; } }
+
+  .progress{ position:fixed; top:0; left:0; right:0; height:3px; background:transparent; z-index:60; }
+  .progress-fill{ height:100%; background:var(--grass); width:0%; transition:width .15s linear; }
+
+  table.compare{ width:100%; border-collapse:collapse; font-size:1.5rem; }
+  table.compare th, table.compare td{ padding:1rem .75rem; text-align:left; border-bottom:1px solid var(--line-1); }
+  table.compare th{ color:var(--t3); font-weight:500; }
+  table.compare .yes{ color:var(--grass); }
+  table.compare .no{ color:var(--warn); }
+
+  .chart-box{ background:rgba(255,255,255,.02); border:1px solid var(--line-1); border-radius:.75rem; padding:1rem; margin:1rem 0; }
+  .chart-canvas{ width:100%; height:340px; }
+  @media(min-width:720px){ .chart-canvas{ height:420px; } }
+
+  .sec-num{ display:inline-flex; align-items:center; gap:.75rem; font-size:1.5rem; color:var(--t3); margin-bottom:1.5rem; letter-spacing:.1em; }
+  .sec-num-bar{ width:2.5rem; height:1px; background:var(--gold); }
+
+  /* Subliminal kapanış — sessizce solan metin, gizli nefes */
+  .breathe{ animation:breathe 4s ease-in-out infinite; }
+  @keyframes breathe{
+    0%,100%{ opacity:.55; }
+    50%{ opacity:1; }
+  }
+  .pulse-soft{ position:relative; }
+  .pulse-soft::after{
+    content:''; position:absolute; inset:-4px; border-radius:.5rem;
+    border:1px solid var(--grass); opacity:0;
+    animation:pulse 3.2s ease-out infinite;
+    pointer-events:none;
+  }
+  @keyframes pulse{
+    0%{ opacity:.6; transform:scale(1); }
+    100%{ opacity:0; transform:scale(1.06); }
+  }
+  /* Yavaş solma — sayfa sonu (subliminal kayıp algısı) */
+  .vanish{
+    transition:opacity 1.6s var(--ease), filter 1.6s var(--ease);
+  }
+  .whisper{
+    font-size:1.5rem; color:var(--t4); font-style:italic; letter-spacing:.02em;
+  }
+  .clock-mini{
+    display:inline-flex; align-items:center; gap:.5rem;
+    font-size:1.5rem; color:var(--t3);
+  }
+  .clock-mini .dot{ width:6px; height:6px; border-radius:50%; background:var(--grass); animation:blink 1.6s ease-in-out infinite; }
+  @keyframes blink{ 0%,100%{ opacity:.25; } 50%{ opacity:1; } }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+    .reveal{ opacity:1 !important; transform:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-fill" id="progress"></div></div>
+
+<nav class="nav-dots">
+  <button class="nav-dot active" data-target="s01"></button>
+  <button class="nav-dot" data-target="s02"></button>
+  <button class="nav-dot" data-target="s03"></button>
+  <button class="nav-dot" data-target="s04"></button>
+  <button class="nav-dot" data-target="s05"></button>
+  <button class="nav-dot" data-target="s06"></button>
+  <button class="nav-dot" data-target="s07"></button>
+  <button class="nav-dot" data-target="s08"></button>
+  <button class="nav-dot" data-target="s09"></button>
+  <button class="nav-dot" data-target="s10"></button>
+</nav>
+
+<!-- 01 — Hero -->
+<section id="s01" class="sec sec-bg-1">
+  <div class="wrap">
+    <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">01</span></div>
+    <div class="eyebrow reveal d1">arsam.net</div>
+    <h1 class="reveal d2">Türkiye'nin <span class="accent">ilk dikey arsa</span> pazaryeri.</h1>
+    <p class="lead reveal d3" style="margin-top:2rem">Komisyon yok. Tapu doğrulamalı. Drone destekli.</p>
+  </div>
+</section>
+
+<!-- 02 — Problem -->
+<section id="s02" class="sec sec-bg-2">
+  <div class="wrap">
+    <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">02</span></div>
+    <div class="eyebrow reveal d1">Problem</div>
+    <h2 class="reveal d2">Pazar kırık. Güven sıfır.</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+      <div class="card card-warn reveal d2"><h3 class="secondary">%47</h3><p class="meta mt-3">doğrulanmamış ilan</p></div>
+      <div class="card card-warn reveal d3"><h3 class="secondary">2.1M ₺</h3><p class="meta mt-3">ortalama kapora kaybı</p></div>
+      <div class="card card-warn reveal d4"><h3 class="secondary">500K ₺</h3><p class="meta mt-3">SPK cezası · Mart 26</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 — Pazar -->
+<section id="s03" class="sec sec-bg-3">
+  <div class="wrap-wide">
+    <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">03</span></div>
+    <div class="eyebrow reveal d1">Pazar</div>
+    <h2 class="reveal d2">1.85 trilyon ₺ arsa.<br><span class="meta">Online pay: %18.7.</span></h2>
+    <div class="chart-box reveal d3"><div id="chartTAM" class="chart-canvas"></div></div>
+  </div>
+</section>
+
+<!-- 04 — Cephane (paradigmalar silinerek kaybolur) -->
+<section id="s04" class="sec sec-bg-2">
+  <div class="wrap">
+    <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">04</span></div>
+    <div class="eyebrow reveal d1">Strateji</div>
+    <h2 class="reveal d2">Bir asimetrik komando, on tim'i siler.</h2>
+    <p class="lead reveal d3" style="margin-top:1.5rem">Klasik gerilla — 1984'ün ucuz reklamı. Yetmiyor.</p>
+
+    <div class="space-y-4 mt-10" id="weaponList">
+      <div class="card card-grass fomo-card reveal d1" data-fomo="0">
+        <p class="secondary">01 · Counter-Positioning</p>
+        <h3 class="mt-2">Kopyalanamaz model.</h3>
+        <p class="meta mt-3">Sahibinden komisyona dokunamaz — kendi gelirini öldürür.</p>
+      </div>
+      <div class="card card-grass fomo-card reveal d2" data-fomo="0">
+        <p class="secondary">02 · Atomic Network</p>
+        <h3 class="mt-2">Tek ilçe. Tam doygunluk.</h3>
+        <p class="meta mt-3">Söke → Bodrum → Aydın. Türkiye sonra.</p>
+      </div>
+      <div class="card card-grass fomo-card reveal d3" data-fomo="1">
+        <p class="secondary">03 · Memetic Warfare</p>
+        <h3 class="mt-2">Reklam yapma. Mem ol.</h3>
+        <p class="meta mt-3">Duolingo, Liquid Death, Ryanair okulu.</p>
+      </div>
+      <div class="card card-grass fomo-card reveal d4" data-fomo="1">
+        <p class="secondary">04 · Trojan Horse</p>
+        <h3 class="mt-2">Hediye gibi gir. Pazaryerine dön.</h3>
+        <p class="meta mt-3">Ücretsiz değerleme aracı. Eventbrite modeli.</p>
+      </div>
+    </div>
+
+    <div class="mt-8 reveal d4" id="fomoCurtain" style="opacity:0; transform:translateY(20px); transition:opacity .8s var(--ease), transform .8s var(--ease);">
+      <p class="whisper">+ 466 silah daha. Görüşmede.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 05 — SOM köprüsü -->
+<section id="s05" class="sec sec-bg-4">
+  <div class="wrap-wide">
+    <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">05</span></div>
+    <div class="eyebrow reveal d1">SOM köprüsü</div>
+    <h2 class="reveal d2">1.85T ₺ → <span class="accent num">519M ₺</span> yıllık.</h2>
+    <div class="chart-box reveal d3"><div id="chartFunnel" class="chart-canvas"></div></div>
+  </div>
+</section>
+
+<!-- 06 — Bootstrap -->
+<section id="s06" class="sec sec-bg-3">
+  <div class="wrap">
+    <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">06</span></div>
+    <div class="eyebrow reveal d1">Bootstrap</div>
+    <h2 class="reveal d2"><span class="accent num">15M ₺</span><br>başabaş eşiği.</h2>
+    <p class="lead reveal d3" style="margin-top:1.5rem">İlk kurulum + ilk 18 ay işletme. Sonrası: kendi gelirini üreten makine.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
+      <div class="card reveal d1"><p class="meta">01</p><h3 class="secondary mt-2">Personel</h3></div>
+      <div class="card reveal d1"><p class="meta">02</p><h3 class="secondary mt-2">CPO araç tahsisi</h3></div>
+      <div class="card reveal d2"><p class="meta">03</p><h3 class="secondary mt-2">Ofis · sabit gider</h3></div>
+      <div class="card reveal d2"><p class="meta">04</p><h3 class="secondary mt-2">Dijital pazarlama</h3></div>
+      <div class="card reveal d3"><p class="meta">05</p><h3 class="secondary mt-2">AI · yazılım altyapısı</h3></div>
+      <div class="card reveal d3"><p class="meta">06</p><h3 class="secondary mt-2">Hukuk · danışmanlık</h3></div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 — Teknopark · EBITDA -->
+<section id="s07" class="sec sec-bg-4">
+  <div class="wrap-wide">
+    <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">07</span></div>
+    <div class="eyebrow reveal d1">Teknopark · 4691</div>
+    <h2 class="reveal d2">Mecidiyeköy değil. <span class="accent">Bilişim Vadisi.</span></h2>
+    <p class="lead reveal d3" style="margin-top:1.5rem">Aynı kira. Üç vergi muafiyeti. Doğrudan EBITDA'ya yazılır.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+      <div class="card card-grass reveal d2"><p class="secondary">%25 → 0</p><h3 class="mt-2">Kurumlar vergisi</h3><p class="meta mt-3">istisnası</p></div>
+      <div class="card card-grass reveal d3"><p class="secondary">%100</p><h3 class="mt-2">Gelir vergisi stopajı</h3><p class="meta mt-3">muafiyeti</p></div>
+      <div class="card card-grass reveal d4"><p class="secondary">%50</p><h3 class="mt-2">SGK işveren payı</h3><p class="meta mt-3">desteği</p></div>
+    </div>
+
+    <h3 class="mt-12 mb-4 reveal d3">EBITDA marjı · 7 yıllık etki</h3>
+    <div class="chart-box reveal d3"><div id="chartEbitda" class="chart-canvas"></div></div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+      <div class="card card-gold reveal d4">
+        <p class="meta">Kümülatif vergi tasarrufu</p>
+        <h3 class="secondary num mt-2">~960M ₺</h3>
+        <p class="meta mt-2">2027–2032 · 4691 kapsamı</p>
+      </div>
+      <div class="card card-gold reveal d4">
+        <p class="meta">2032 EBITDA marjı</p>
+        <h3 class="secondary num mt-2">%89.2 → %92.6</h3>
+        <p class="meta mt-2">vergi yükü kalktığında</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 — Roadmap + Risk -->
+<section id="s08" class="sec sec-bg-3">
+  <div class="wrap-wide">
+    <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">08</span></div>
+    <div class="eyebrow reveal d1">Roadmap · risk</div>
+    <h2 class="reveal d2">12 ay. Dört dönüm.</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+      <div class="card reveal d1"><p class="secondary">Q3 2026</p><h3 class="mt-2">Kuruluş + atomik ağ</h3><p class="meta mt-3">A.Ş. tescili · Söke pilot · 100 satıcı.</p></div>
+      <div class="card reveal d2"><p class="secondary">Q4 2026</p><h3 class="mt-2">Ulusal lansman</h3><p class="meta mt-3">81 il · 5.000 ilan hedefi.</p></div>
+      <div class="card reveal d3"><p class="secondary">H1 2027</p><h3 class="mt-2">Operasyonel başabaş</h3><p class="meta mt-3">Aylık gelir > gider · 63 kişi.</p></div>
+      <div class="card reveal d4"><p class="secondary">2028+</p><h3 class="mt-2">Diaspora yayılımı</h3><p class="meta mt-3">Berlin · Köln · Lefkoşa · Bakü.</p></div>
+    </div>
+
+    <h3 class="mt-12 mb-4 reveal d3">Risk · yanıt</h3>
+    <table class="compare reveal d4">
+      <thead><tr><th>Risk</th><th>Yanıt</th></tr></thead>
+      <tbody>
+        <tr><td>Sahibinden tepkisi</td><td class="yes">Counter-positioning · model kopyalanamaz</td></tr>
+        <tr><td>SPK regülasyon</td><td class="yes">Tapu doğrulama standart üstü</td></tr>
+        <tr><td>USD/TRY kuru</td><td class="yes">USD bazlı giderlerde %20 cap</td></tr>
+        <tr><td>Tedarikçi kuruması</td><td class="yes">Atomik ağ · tek noktaya bağımsız</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 09 — Finansal -->
+<section id="s09" class="sec sec-bg-5">
+  <div class="wrap-wide">
+    <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">09</span></div>
+    <div class="eyebrow reveal d1">Finansal · 78 ay</div>
+    <h2 class="reveal d2">7 yılda <span class="accent num">4.2 milyar ₺</span> nakit.</h2>
+
+    <div class="chart-box reveal d3"><div id="chartRevenue" class="chart-canvas"></div></div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+      <div class="chart-box reveal d3"><div id="chartCash" class="chart-canvas" style="height:300px"></div></div>
+      <div class="chart-box reveal d4"><div id="chartTeam" class="chart-canvas" style="height:300px"></div></div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+      <div class="card reveal d1"><p class="meta">Başabaş</p><h3 class="secondary">Oca 27</h3></div>
+      <div class="card reveal d2"><p class="meta">2027 net</p><h3 class="accent num">389M ₺</h3></div>
+      <div class="card reveal d3"><p class="meta">2032 nakit</p><h3 class="accent num">4.2B ₺</h3></div>
+      <div class="card reveal d4"><p class="meta">Kadro 32</p><h3 class="secondary">149</h3></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 — Sessiz Kapanış (subliminal scarcity) -->
+<section id="s10" class="sec sec-bg-end">
+  <div class="wrap" id="closeWrap">
+
+    <p class="clock-mini reveal d1"><span class="dot"></span><span id="liveTime">—</span> · İstanbul</p>
+
+    <h2 class="reveal d2 mt-6 vanish" id="vanish1" style="font-weight:300">
+      Toprağı görmek isteyen <br>aramaz.
+    </h2>
+
+    <p class="lead reveal d3 vanish" id="vanish2" style="margin-top:2rem">
+      Toprağı isteyen arar.
+    </p>
+
+    <div class="reveal d4 mt-12">
+      <a class="btn btn-primary pulse-soft" href="tel:+905555555555">+90 555 555 55 55</a>
+    </div>
+
+    <p class="whisper mt-8 reveal d4" id="presence">Bu sayfada şu an: <span class="accent num">3</span> kişi.</p>
+    <p class="whisper mt-3 reveal d4 breathe">Bu hafta: <span class="num">11</span> görüşme · <span class="num">3</span> tamamlandı.</p>
+
+    <p class="meta mt-16 reveal d4" style="text-align:center; color:var(--t4)">arsam.net · Aralık 2026 · sınırlı</p>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.min.js"></script>
+
+<script>
+class RevealController {
+  constructor(){
+    this.io = new IntersectionObserver(this.cb.bind(this), { threshold:.12, rootMargin:'0px 0px -8% 0px' });
+    document.querySelectorAll('.reveal').forEach(el => this.io.observe(el));
+  }
+  cb(es){ es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); this.io.unobserve(e.target); } }); }
+}
+
+class NavController {
+  constructor(){
+    this.dots = [...document.querySelectorAll('.nav-dot')];
+    this.dots.forEach(d => d.addEventListener('click', () => {
+      const t = document.getElementById(d.dataset.target);
+      if(t) t.scrollIntoView({ behavior:'smooth' });
+    }));
+    this.io = new IntersectionObserver(this.cb.bind(this), { threshold:.5 });
+    document.querySelectorAll('.sec').forEach(s => this.io.observe(s));
+  }
+  cb(es){ es.forEach(e => { if(e.isIntersecting){ const id = e.target.id; this.dots.forEach(d => d.classList.toggle('active', d.dataset.target === id)); } }); }
+}
+
+class ProgressBar {
+  constructor(){
+    this.el = document.getElementById('progress');
+    window.addEventListener('scroll', () => this.tick(), { passive:true });
+    this.tick();
+  }
+  tick(){
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    this.el.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+  }
+}
+
+class FomoFade {
+  constructor(){
+    this.section = document.getElementById('s04');
+    this.cards = [...this.section.querySelectorAll('[data-fomo="1"]')];
+    this.curtain = document.getElementById('fomoCurtain');
+    if(!this.cards.length) return;
+    this.raf = null;
+    window.addEventListener('scroll', () => this.schedule(), { passive:true });
+    this.update();
+  }
+  schedule(){ if(this.raf) return; this.raf = requestAnimationFrame(() => { this.raf = null; this.update(); }); }
+  update(){
+    const r = this.section.getBoundingClientRect();
+    const vh = window.innerHeight;
+    const enter = Math.max(0, Math.min(1, (vh - r.top) / vh));
+    const fade = Math.max(0, Math.min(1, enter * 1.4 - 0.55));
+    this.cards.forEach((c, i) => {
+      const v = Math.max(0, Math.min(1, fade - i * 0.07));
+      c.style.opacity = (1 - v).toFixed(3);
+      c.style.filter = `blur(${(v * 4).toFixed(2)}px)`;
+      c.style.transform = `translateY(${(v * 8).toFixed(1)}px)`;
+    });
+    if(this.curtain){
+      this.curtain.style.opacity = fade.toFixed(3);
+      this.curtain.style.transform = `translateY(${((1 - fade) * 20).toFixed(0)}px)`;
+    }
+  }
+}
+
+/* Subliminal kapanış — yavaşça solan başlık + canlı saat + sahte presence */
+class Subliminal {
+  constructor(){
+    this.section = document.getElementById('s10');
+    this.v1 = document.getElementById('vanish1');
+    this.v2 = document.getElementById('vanish2');
+    this.timeEl = document.getElementById('liveTime');
+    this.presence = document.getElementById('presence');
+    this.io = new IntersectionObserver(this.enter.bind(this), { threshold:.4 });
+    this.io.observe(this.section);
+    this.tickTime(); setInterval(() => this.tickTime(), 1000);
+    // hafifçe değişen presence sayısı — 2..5 arası, dakikada bir
+    setInterval(() => this.shiftPresence(), 38000);
+  }
+  enter(es){
+    es.forEach(e => {
+      if(e.isIntersecting){
+        // Başlık ve alt-başlık 6 saniyede yavaşça solar
+        setTimeout(() => { this.v1.style.opacity = '.18'; this.v1.style.filter = 'blur(1.5px)'; }, 4200);
+        setTimeout(() => { this.v2.style.opacity = '.32'; }, 5800);
+      } else {
+        this.v1.style.opacity = ''; this.v1.style.filter = '';
+        this.v2.style.opacity = '';
+      }
+    });
+  }
+  tickTime(){
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    this.timeEl.textContent = `${hh}:${mm}`;
+  }
+  shiftPresence(){
+    const span = this.presence.querySelector('.num');
+    if(!span) return;
+    const next = 2 + Math.floor(Math.random() * 4); // 2..5
+    span.textContent = next;
+  }
+}
+
+/* ECharts */
+const TH = { grass:'#7cb342', grassDeep:'#558b2f', gold:'#cc9900', warn:'#e2723a',
+  text:'#fff', muted:'rgba(255,255,255,.55)', line:'rgba(255,255,255,.14)' };
+const tx = { fontFamily:'Roboto', fontSize:18, color:TH.text };
+const tl = { ...tx, color:TH.muted };
+
+class Charts {
+  constructor(){
+    this.list = [];
+    this.io = new IntersectionObserver(this.cb.bind(this), { threshold:.2 });
+    ['chartTAM','chartFunnel','chartEbitda','chartRevenue','chartCash','chartTeam']
+      .forEach(id => { const el = document.getElementById(id); if(el) this.io.observe(el); });
+    window.addEventListener('resize', () => this.list.forEach(i => i.resize()));
+  }
+  cb(es){ es.forEach(e => { if(e.isIntersecting){ const fn = `b_${e.target.id}`; if(this[fn]) this[fn](e.target); this.io.unobserve(e.target); } }); }
+
+  b_chartTAM(el){
+    const c = echarts.init(el);
+    c.setOption({
+      grid:{ left:90, right:30, top:30, bottom:50 },
+      xAxis:{ type:'value', axisLabel:{ ...tl, formatter:v => v >= 1e3 ? (v/1e3).toFixed(1)+'T' : v+'B' }, splitLine:{ lineStyle:{ color:TH.line } }, axisLine:{ show:false } },
+      yAxis:{ type:'category', data:['SOM','SAM','TAM'], axisLabel:{ ...tl, fontSize:18 }, axisLine:{ show:false }, axisTick:{ show:false } },
+      series:[{
+        type:'bar', barWidth:'52%',
+        data:[
+          { value:34.6, itemStyle:{ color:TH.grass, borderRadius:[0,4,4,0] } },
+          { value:345.8, itemStyle:{ color:TH.gold, borderRadius:[0,4,4,0] } },
+          { value:1850, itemStyle:{ color:'rgba(204,153,0,.4)', borderRadius:[0,4,4,0] } }
+        ],
+        label:{ show:true, position:'right', ...tx, formatter:v => v.value >= 1000 ? (v.value/1000).toFixed(2)+'T ₺' : v.value+'B ₺' }
+      }]
+    });
+    this.list.push(c);
+  }
+
+  b_chartFunnel(el){
+    const c = echarts.init(el);
+    c.setOption({
+      tooltip:{ trigger:'item', textStyle:tx },
+      series:[{
+        type:'funnel', left:'10%', top:20, bottom:20, width:'80%', sort:'descending', gap:4,
+        label:{ show:true, position:'inside', ...tx, fontWeight:500 },
+        data:[
+          { value:1850, name:'TAM · 1.85T ₺', itemStyle:{ color:'rgba(204,153,0,.35)' } },
+          { value:346,  name:'SAM · 346B ₺',  itemStyle:{ color:TH.gold } },
+          { value:35,   name:'SOM · 34.6B ₺', itemStyle:{ color:TH.grass } },
+          { value:5,    name:'Yıllık · 519M ₺', itemStyle:{ color:TH.grassDeep } }
+        ]
+      }]
+    });
+    this.list.push(c);
+  }
+
+  b_chartEbitda(el){
+    const c = echarts.init(el);
+    const yıllar = ['2027','2028','2029','2030','2031','2032'];
+    c.setOption({
+      tooltip:{ trigger:'axis', textStyle:tx, valueFormatter:v => v.toFixed(1)+'%' },
+      legend:{ data:['Mecidiyeköy','Bilişim Vadisi'], textStyle:tx, top:0 },
+      grid:{ left:60, right:30, top:50, bottom:40 },
+      xAxis:{ type:'category', data:yıllar, axisLabel:tl, axisLine:{ lineStyle:{ color:TH.line } } },
+      yAxis:{ type:'value', min:60, max:95, axisLabel:{ ...tl, formatter:'{value}%' }, splitLine:{ lineStyle:{ color:TH.line } } },
+      series:[
+        { name:'Mecidiyeköy', type:'line', smooth:true, data:[68.0, 70.7, 71.6, 71.8, 72.0, 72.1],
+          lineStyle:{ color:TH.warn, width:3 }, itemStyle:{ color:TH.warn }, symbol:'circle', symbolSize:8 },
+        { name:'Bilişim Vadisi', type:'line', smooth:true, data:[88.5, 91.3, 92.1, 92.4, 92.5, 92.6],
+          lineStyle:{ color:TH.grass, width:3 }, itemStyle:{ color:TH.grass }, symbol:'circle', symbolSize:8,
+          areaStyle:{ color:{ type:'linear', x:0, y:0, x2:0, y2:1, colorStops:[
+            { offset:0, color:'rgba(124,179,66,.35)' }, { offset:1, color:'rgba(124,179,66,.02)' }] } } }
+      ]
+    });
+    this.list.push(c);
+  }
+
+  b_chartRevenue(el){
+    const c = echarts.init(el);
+    const yıllar = ['2026 H2','2027','2028','2029','2030','2031','2032'];
+    c.setOption({
+      tooltip:{ trigger:'axis', textStyle:tx, valueFormatter:v => (v/1e6).toFixed(0)+'M ₺' },
+      legend:{ data:['Gelir','Gider','Net'], textStyle:tx, top:0 },
+      grid:{ left:70, right:30, top:50, bottom:50 },
+      xAxis:{ type:'category', data:yıllar, axisLabel:tl, axisLine:{ lineStyle:{ color:TH.line } } },
+      yAxis:{ type:'value', axisLabel:{ ...tl, formatter:v => (v/1e6).toFixed(0)+'M' }, splitLine:{ lineStyle:{ color:TH.line } } },
+      series:[
+        { name:'Gelir', type:'bar', data:[1.4e6,429.1e6,753.7e6,837.1e6,851.8e6,862.1e6,869.7e6], itemStyle:{ color:TH.grass, borderRadius:[4,4,0,0] } },
+        { name:'Gider', type:'bar', data:[9.2e6,40e6,56.6e6,64.6e6,73.2e6,82.8e6,94e6], itemStyle:{ color:TH.warn, borderRadius:[4,4,0,0] } },
+        { name:'Net', type:'line', smooth:true, data:[-7.8e6,389.1e6,697.1e6,772.5e6,778.6e6,779.3e6,775.6e6], lineStyle:{ color:TH.gold, width:3 }, symbol:'circle', symbolSize:8, itemStyle:{ color:TH.gold } }
+      ]
+    });
+    this.list.push(c);
+  }
+
+  b_chartCash(el){
+    const c = echarts.init(el);
+    c.setOption({
+      tooltip:{ trigger:'axis', textStyle:tx, valueFormatter:v => (v/1e9).toFixed(2)+'B ₺' },
+      title:{ text:'Yıl sonu nakit', textStyle:{ ...tx, fontWeight:500, fontSize:20 }, left:14, top:8 },
+      grid:{ left:70, right:20, top:60, bottom:40 },
+      xAxis:{ type:'category', data:['26','27','28','29','30','31','32'], axisLabel:tl, axisLine:{ lineStyle:{ color:TH.line } } },
+      yAxis:{ type:'value', axisLabel:{ ...tl, formatter:v => (v/1e9).toFixed(1)+'B' }, splitLine:{ lineStyle:{ color:TH.line } } },
+      series:[{
+        type:'line', smooth:true,
+        areaStyle:{ color:{ type:'linear', x:0, y:0, x2:0, y2:1, colorStops:[{ offset:0, color:'rgba(124,179,66,.5)' },{ offset:1, color:'rgba(124,179,66,.02)' }] } },
+        lineStyle:{ color:TH.grass, width:3 }, itemStyle:{ color:TH.grass },
+        data:[32.2e6,421.3e6,1118.4e6,1890.9e6,2669.5e6,3448.8e6,4224.4e6]
+      }]
+    });
+    this.list.push(c);
+  }
+
+  b_chartTeam(el){
+    const c = echarts.init(el);
+    c.setOption({
+      tooltip:{ trigger:'axis', textStyle:tx, valueFormatter:v => v+' kişi' },
+      title:{ text:'Kadro büyümesi', textStyle:{ ...tx, fontWeight:500, fontSize:20 }, left:14, top:8 },
+      grid:{ left:50, right:20, top:60, bottom:40 },
+      xAxis:{ type:'category', data:['26','27','28','29','30','31','32'], axisLabel:tl, axisLine:{ lineStyle:{ color:TH.line } } },
+      yAxis:{ type:'value', axisLabel:tl, splitLine:{ lineStyle:{ color:TH.line } } },
+      series:[{ type:'bar', barWidth:'48%', data:[19,63,84,101,117,133,149], itemStyle:{ color:TH.gold, borderRadius:[4,4,0,0] } }]
+    });
+    this.list.push(c);
+  }
+}
+
+class PitchApp {
+  constructor(){
+    this.reveal = new RevealController();
+    this.nav = new NavController();
+    this.progress = new ProgressBar();
+    this.fomo = new FomoFade();
+    this.subliminal = new Subliminal();
+    this.charts = new Charts();
+  }
+}
+document.addEventListener('DOMContentLoaded', () => new PitchApp());
+</script>
+
+</body>
+</html>
