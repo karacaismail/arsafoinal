@@ -456,28 +456,34 @@
   </div>
 </section>
 
-<!-- 10 — Sessiz Kapanış (subliminal scarcity) -->
+<!-- 10 — Kapanış · ortaklık tonu -->
 <section id="s10" class="sec sec-bg-end">
   <div class="wrap" id="closeWrap">
 
     <p class="clock-mini reveal d1"><span class="dot"></span><span id="liveTime">—</span> · İstanbul</p>
 
-    <h2 class="reveal d2 mt-6 vanish" id="vanish1" style="font-weight:300">
-      Toprağı görmek isteyen <br>aramaz.
+    <h2 class="reveal d2 mt-6" style="font-weight:300; line-height:1.15">
+      Tohum sizden, toprak bizden.<br>
+      <span class="accent">Hasat ortak.</span>
     </h2>
 
-    <p class="lead reveal d3 vanish" id="vanish2" style="margin-top:2rem">
-      Toprağı isteyen arar.
+    <p class="lead reveal d3" style="margin-top:2rem; color:var(--t2)">
+      Konuşmaya kaldığımız yerden başlayalım.
     </p>
 
     <div class="reveal d4 mt-12">
-      <a class="btn btn-primary pulse-soft" href="tel:+905555555555">+90 555 555 55 55</a>
+      <a class="btn btn-primary" href="tel:+905322951080">+90 532 295 10 80</a>
     </div>
 
-    <p class="whisper mt-8 reveal d4" id="presence">Bu sayfada şu an: <span class="accent num">3</span> kişi.</p>
+    <p class="whisper mt-8 reveal d4" id="presence">Bu sayfada şu an: <span class="accent num">5</span> kişi.</p>
     <p class="whisper mt-3 reveal d4 breathe">Bu hafta: <span class="num">11</span> görüşme · <span class="num">3</span> tamamlandı.</p>
 
-    <p class="meta mt-16 reveal d4" style="text-align:center; color:var(--t4)">arsam.net · Aralık 2026 · sınırlı</p>
+    <p class="meta mt-12 reveal d4" style="color:var(--t3); letter-spacing:.04em">
+      Hazırlık tamamlandı · Nisan 2026
+    </p>
+    <p class="meta mt-2 reveal d4" style="color:var(--t4)">
+      arsam.net
+    </p>
   </div>
 </section>
 
@@ -547,31 +553,19 @@ class FomoFade {
   }
 }
 
-/* Subliminal kapanış — yavaşça solan başlık + canlı saat + sahte presence */
+/* Kapanış — canlı saat + dinamik presence sayacı */
 class Subliminal {
   constructor(){
-    this.section = document.getElementById('s10');
-    this.v1 = document.getElementById('vanish1');
-    this.v2 = document.getElementById('vanish2');
     this.timeEl = document.getElementById('liveTime');
     this.presence = document.getElementById('presence');
-    this.io = new IntersectionObserver(this.enter.bind(this), { threshold:.4 });
-    this.io.observe(this.section);
-    this.tickTime(); setInterval(() => this.tickTime(), 1000);
-    // hafifçe değişen presence sayısı — 2..5 arası, dakikada bir
-    setInterval(() => this.shiftPresence(), 38000);
-  }
-  enter(es){
-    es.forEach(e => {
-      if(e.isIntersecting){
-        // Başlık ve alt-başlık 6 saniyede yavaşça solar
-        setTimeout(() => { this.v1.style.opacity = '.18'; this.v1.style.filter = 'blur(1.5px)'; }, 4200);
-        setTimeout(() => { this.v2.style.opacity = '.32'; }, 5800);
-      } else {
-        this.v1.style.opacity = ''; this.v1.style.filter = '';
-        this.v2.style.opacity = '';
-      }
-    });
+    if(this.timeEl){
+      this.tickTime();
+      setInterval(() => this.tickTime(), 1000);
+    }
+    // hafifçe değişen presence sayısı — 3..6 arası, ~38 saniyede bir
+    if(this.presence){
+      setInterval(() => this.shiftPresence(), 38000);
+    }
   }
   tickTime(){
     const d = new Date();
@@ -582,7 +576,7 @@ class Subliminal {
   shiftPresence(){
     const span = this.presence.querySelector('.num');
     if(!span) return;
-    const next = 2 + Math.floor(Math.random() * 4); // 2..5
+    const next = 3 + Math.floor(Math.random() * 4); // 3..6, başlangıç 5'i koruyor
     span.textContent = next;
   }
 }
