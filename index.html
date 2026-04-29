@@ -93,6 +93,19 @@
 
   .fomo-card{ transition:opacity .6s var(--ease), filter .6s var(--ease), transform .6s var(--ease); }
 
+  /* Kalıcı veiled state — son 2 stratejik kart başından itibaren bulanık.
+     "Kalan stratejiler gizli — sadece bunları gösteriyoruz" mesajı. */
+  .card-veiled{
+    opacity:.28; filter:blur(2.6px); transform:translateY(2px);
+    pointer-events:none;
+  }
+  .card-veiled::after{
+    content:'gizli'; position:absolute; top:.75rem; right:.85rem;
+    font-size:1.125rem; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--t4); filter:blur(0); opacity:.55;
+  }
+  .card-veiled{ position:relative; }
+
   .btn{
     display:inline-flex; align-items:center; justify-content:center; gap:.75rem;
     min-height:56px; padding:1rem 1.75rem; font-size:1.5rem; font-weight:500;
@@ -208,8 +221,40 @@
   <div class="wrap-wide">
     <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">03</span></div>
     <div class="eyebrow reveal d1">Pazar</div>
+
+    <!-- Türkiye gayrimenkul satış hacmi · TKGM 2024 + TÜİK 2024 -->
+    <p class="meta reveal d2" style="margin-top:.5rem; margin-bottom:1.25rem; color:var(--t3); letter-spacing:.04em">
+      Türkiye gayrimenkul satış hacmi · <span class="secondary">TKGM 2024</span> · <span class="secondary">TÜİK 2024</span>
+    </p>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-12">
+      <div class="card card-gold reveal d2">
+        <p class="meta">toplam taşınmaz</p>
+        <h3 class="secondary num mt-2">3.07M</h3>
+        <p class="meta mt-2">2024 yıllık · TKGM</p>
+      </div>
+      <div class="card reveal d2">
+        <p class="meta">konut</p>
+        <h3 class="accent num mt-2">1.48M</h3>
+        <p class="meta mt-2">2024 yıllık · TÜİK</p>
+      </div>
+      <div class="card card-grass reveal d3">
+        <p class="meta">arsa + tarla + ticari</p>
+        <h3 class="accent num mt-2">1.59M</h3>
+        <p class="meta mt-2">arsam.net direkt pazarı</p>
+      </div>
+      <div class="card reveal d3">
+        <p class="meta">günlük ortalama</p>
+        <h3 class="secondary num mt-2">8.4K</h3>
+        <p class="meta mt-2">~255K / ay · 2024</p>
+      </div>
+    </div>
+
     <h2 class="reveal d2">1.85 trilyon ₺ arsa.<br><span class="meta">Online pay: %18.7.</span></h2>
     <div class="chart-box reveal d3"><div id="chartTAM" class="chart-canvas"></div></div>
+
+    <p class="meta reveal d4" style="margin-top:1rem; color:var(--t4); font-size:1.375rem !important">
+      Kaynaklar: TKGM (Tapu ve Kadastro Genel Müdürlüğü) 2024 yılı taşınmaz satış istatistikleri · TÜİK Konut Satış İstatistikleri 2024.
+    </p>
   </div>
 </section>
 
@@ -232,62 +277,62 @@
         <h3 class="mt-2">Tek ilçe. Tam doygunluk.</h3>
         <p class="meta mt-3">Söke → Bodrum → Aydın. Türkiye sonra.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d3" data-fomo="1">
+      <div class="card card-grass reveal d3">
         <p class="secondary">03 · Programmatic SEO</p>
         <h3 class="mt-2">4.865 ilçe sayfası.</h3>
         <p class="meta mt-3">Her ilçe × 5 anahtar kelime için otomatik landing page; Google'a tıklama başına ödeme yok, 24 ayda 12M aylık organik ziyaretçi.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d4" data-fomo="1">
+      <div class="card card-grass reveal d4">
         <p class="secondary">04 · Drone Moat</p>
         <h3 class="mt-2">Hava görüntüsü, standart.</h3>
         <p class="meta mt-3">Her ilanda 4K drone videosu + parsel sınırı overlay'i; rakibin ilan başına birim maliyetini ikiye katlar, kopyalanması finansal olarak imkansız.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d1" data-fomo="1">
+      <div class="card card-grass reveal d1">
         <p class="secondary">05 · TAKBİS API</p>
         <h3 class="mt-2">Tapuyu kaynaktan doğrula.</h3>
         <p class="meta mt-3">Tapu Müdürlüğü ile resmi entegrasyon; sahte ilan teknik olarak imkansız, %47 doğrulanmamış pazar normu sıfıra iner.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d2" data-fomo="1">
+      <div class="card card-grass reveal d2">
         <p class="secondary">06 · Escrow Trust</p>
         <h3 class="mt-2">Kapora bize gelmez.</h3>
         <p class="meta mt-3">Banka emanet hesabı + SPK uyumlu sözleşme; ortalama 2.1M ₺ alıcı kayıp riski sıfırlanır, dönüşüm primi %3.4 artar.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d3" data-fomo="1">
+      <div class="card card-grass reveal d3">
         <p class="secondary">07 · Diaspora First</p>
         <h3 class="mt-2">Berlin parası, Türk toprağı.</h3>
         <p class="meta mt-3">Almanya, KKTC, Azerbaycan'da 12 yerel temsilci; €/TRY arbitraj satın alımı ihracat geliriyle eşdeğer dış kazanım yaratır.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d4" data-fomo="1">
+      <div class="card card-grass reveal d4">
         <p class="secondary">08 · Bank Channel</p>
         <h3 class="mt-2">Banka gişesi = arsam standı.</h3>
         <p class="meta mt-3">Garanti, İşbank, QNB konut kredisi şubelerinde co-branded QR; pre-approved alıcı havuzuna sıfır CAC ile erişim.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d1" data-fomo="1">
+      <div class="card card-grass reveal d1">
         <p class="secondary">09 · İmar AI</p>
         <h3 class="mt-2">"Bu arsa ne yapılır?"</h3>
         <p class="meta mt-3">TAKS/KAKS/imar planı parser'ı + LLM; her ilan için konut, ticari, agro 3 senaryo + ROI tahmini, satıcı dönüşümü %22 artar.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d2" data-fomo="1">
+      <div class="card card-grass reveal d2">
         <p class="secondary">10 · Freemium Tier</p>
         <h3 class="mt-2">Listeleme bedava. Görünürlük ücretli.</h3>
         <p class="meta mt-3">Komisyon yok — gelir öne çıkarma, 360° tour, profesyonel video premium katmanından; freemium-paid dönüşüm %18, ARPU 4.200 ₺.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d3" data-fomo="1">
+      <div class="card card-grass reveal d3">
         <p class="secondary">11 · İlçe Operatör</p>
         <h3 class="mt-2">Her ilçeye lokal CEO.</h3>
         <p class="meta mt-3">Komisyonlu bağımsız temsilci; saha doğrulama, müşteri ilişkisi, drone çekimi yerel ekiple — merkez P&L'ine sıfır sabit yük.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d4" data-fomo="1">
+      <div class="card card-grass reveal d4">
         <p class="secondary">12 · Land Storytelling</p>
         <h3 class="mt-2">Her arsanın bir hikâyesi.</h3>
         <p class="meta mt-3">Toprağın geçmişi, mahsul anlatısı, sınır komşusu hikâyesi içerik formatında; YouTube/TikTok yıllık 18M organik gösterim hedefi.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d1" data-fomo="1">
+      <div class="card card-grass card-veiled reveal d1">
         <p class="secondary">13 · Mikro Kredi Köprüsü</p>
         <h3 class="mt-2">Kredisi olmayana, kefil platform.</h3>
         <p class="meta mt-3">Yatırımcı havuzlu 250K–2M ₺ mikro kredi; arsa teminat, %42 IRR, alıcı havuzu 3× büyür, satıcı satış süresi yarıya iner.</p>
       </div>
-      <div class="card card-grass fomo-card reveal d2" data-fomo="1">
+      <div class="card card-grass card-veiled reveal d2">
         <p class="secondary">14 · Üç Hatlı Ekosistem</p>
         <h3 class="mt-2">İlan + değerleme + tapu hizmeti.</h3>
         <p class="meta mt-3">Tek pazaryeri, üç gelir kalemi; cross-sell oranı %38, müşteri yaşam değeri 4.7×, rakipler tek hat üzerinde sıkışır.</p>
