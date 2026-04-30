@@ -93,6 +93,21 @@
 
   .fomo-card{ transition:opacity .6s var(--ease), filter .6s var(--ease), transform .6s var(--ease); }
 
+  /* Glow-pulse — ana 15M ₺ rakamına can alıcı nefes */
+  @keyframes glow-pulse {
+    0%,100%{ text-shadow:0 0 80px rgba(124,179,66,.5), 0 0 24px rgba(124,179,66,.35); }
+    50%   { text-shadow:0 0 120px rgba(124,179,66,.75), 0 0 40px rgba(124,179,66,.55); }
+  }
+  .glow-pulse{ animation:glow-pulse 3.4s ease-in-out infinite; }
+
+  /* Glassmorphism — kartların arkasında frosted glass */
+  .card{
+    backdrop-filter:blur(10px) saturate(140%);
+    -webkit-backdrop-filter:blur(10px) saturate(140%);
+  }
+  .card{ transition:border-color .35s var(--ease), background .35s var(--ease), transform .35s var(--ease), box-shadow .35s var(--ease); }
+  .card:hover{ transform:translateY(-2px); }
+
   /* Pill component — chip / badge style for teknopark seçenekleri */
   .pill-row{ display:flex; flex-wrap:wrap; gap:.55rem; }
   .pill{
@@ -359,13 +374,27 @@
     <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">01</span></div>
     <div class="eyebrow reveal d1">Bootstrap</div>
 
-    <h2 class="reveal d2" style="font-size:clamp(2.75rem,9vw,4.75rem); font-weight:600; line-height:1.08; letter-spacing:-.025em">
-      <span style="font-weight:300; color:var(--t2)">Toplam</span> <span class="num" style="color:var(--warn)">49 milyon ₺</span> <span style="font-weight:300; color:var(--t2)">harcanır.</span><br>
-      Cebinizden sadece <span class="accent num">15 milyon ₺</span>.
-    </h2>
+    <!-- PRIMARY · en can alıcı vurgu -->
+    <div class="reveal d2" style="margin-top:1rem">
+      <p style="font-size:clamp(1.625rem,4vw,2.25rem); font-weight:300; color:var(--t2); letter-spacing:-.005em">
+        Cebinizden sadece
+      </p>
+      <p class="num glow-pulse" style="font-size:clamp(4rem,15vw,8.5rem); font-weight:700; line-height:1; letter-spacing:-.04em; color:var(--grass); margin-top:.25rem">
+        15 milyon ₺
+      </p>
+      <p style="font-size:clamp(1.625rem,4vw,2.25rem); font-weight:300; color:var(--t2); letter-spacing:-.005em; margin-top:.25rem">
+        yatırım parası çıkacak.
+      </p>
+    </div>
 
-    <p class="lead reveal d3" style="margin-top:1.5rem; font-size:clamp(1.625rem,3vw,1.875rem); color:var(--t2)">
-      <span class="accent num">15M ₺</span> sermaye — ilk kurulum + 18 ay başabaş eşiği. Geri kalan <span class="secondary num">34M ₺</span>'yi sistem kendi cirosundan öder. <span class="accent">Kötümser senaryoda bile</span> 2027 sonu ciro <span class="accent num">259M ₺</span>.
+    <!-- SECONDARY · ikinci vurgu -->
+    <p class="reveal d3" style="margin-top:2.5rem; font-size:clamp(1.875rem,4.5vw,2.5rem); font-weight:400; line-height:1.3; color:var(--t1)">
+      Kalan <span class="num" style="color:var(--gold); font-weight:700; font-size:1.15em">34 milyon ₺</span>, <span style="color:var(--t2)">kazandıkça harcanacak.</span>
+    </p>
+
+    <!-- TERTIARY · özet -->
+    <p class="reveal d4" style="margin-top:1.5rem; font-size:clamp(1.375rem,2.5vw,1.625rem); color:var(--t3); line-height:1.55">
+      Toplam <span class="num" style="color:var(--t2)">49 milyon ₺</span> harcanır. <span style="font-style:italic; color:var(--t2)">Minimum</span> <span class="num" style="color:var(--grass); font-weight:600">259 milyon ₺</span> kazanılır.
     </p>
 
     <!-- Para akışı · 3 kademe -->
@@ -478,7 +507,7 @@
       <span class="pill pill-soft">Cyberpark Bilkent</span>
       <span class="pill pill-blur">Sabancı Teknopark</span>
       <span class="pill pill-blur">Marmara Teknopark</span>
-      <span class="pill pill-veil">Bilişim Vadisi</span>
+      <span class="pill pill-veil">Teknopark</span>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
@@ -511,7 +540,7 @@
       <div class="card card-gold reveal d4">
         <p class="meta">Kümülatif (2027–2032)</p>
         <h3 class="secondary num mt-2">~960 milyon ₺</h3>
-        <p class="meta mt-2">4691 kanun kapsamı</p>
+        <p class="meta mt-2">4691 no'lu kanun kapsamı</p>
       </div>
       <div class="card card-gold reveal d4">
         <p class="meta">2032 EBITDA marjı</p>
@@ -1122,14 +1151,14 @@ class Charts {
     const yıllar = ['2027','2028','2029','2030','2031','2032'];
     c.setOption({
       tooltip:{ backgroundColor:'rgba(15,10,7,.92)', borderColor:'rgba(255,255,255,.14)', borderWidth:1, padding:[10,14], trigger:'axis', textStyle:tx, valueFormatter:v => v.toFixed(1)+'%' },
-      legend:{ data:['Mecidiyeköy','Bilişim Vadisi'], textStyle:tx, top:0 },
+      legend:{ data:['Mecidiyeköy','Teknopark'], textStyle:tx, top:0 },
       grid:{ left:60, right:30, top:50, bottom:40 },
       xAxis:{ type:'category', data:yıllar, axisLabel:tl, axisLine:{ lineStyle:{ color:TH.line } } },
       yAxis:{ type:'value', min:60, max:95, axisLabel:{ ...tl, formatter:'{value}%' }, splitLine:{ lineStyle:{ color:TH.line } } },
       series:[
         { name:'Mecidiyeköy', type:'line', smooth:true, data:[68.0, 70.7, 71.6, 71.8, 72.0, 72.1],
           lineStyle:{ color:TH.warn, width:3 }, itemStyle:{ color:TH.warn }, symbol:'circle', symbolSize:8 },
-        { name:'Bilişim Vadisi', type:'line', smooth:true, data:[88.5, 91.3, 92.1, 92.4, 92.5, 92.6],
+        { name:'Teknopark', type:'line', smooth:true, data:[88.5, 91.3, 92.1, 92.4, 92.5, 92.6],
           lineStyle:{ color:TH.grass, width:3 }, itemStyle:{ color:TH.grass }, symbol:'circle', symbolSize:8,
           areaStyle:{ color:{ type:'linear', x:0, y:0, x2:0, y2:1, colorStops:[
             { offset:0, color:'rgba(124,179,66,.35)' }, { offset:1, color:'rgba(124,179,66,.02)' }] } } }
