@@ -242,9 +242,9 @@
   .header-actions{
     display:flex; align-items:center; gap:.5rem;
   }
-  /* Floating right-side CTA stack — sticky, vertically centered */
+  /* Floating right-side CTA stack — glassmorphism, alt-yaklaşık (üst %70) */
   .cta-stack{
-    position:fixed; right:.75rem; top:50%;
+    position:fixed; right:.75rem; top:70%;
     transform:translateY(-50%);
     display:flex; flex-direction:column; gap:.6rem;
     z-index:55;
@@ -253,13 +253,17 @@
   .cta-fab{
     display:inline-flex; align-items:center; justify-content:center;
     width:3rem; height:3rem;
-    background:#fff; color:var(--bg-3);
+    background:rgba(255,255,255,.8);
+    backdrop-filter:blur(14px) saturate(180%);
+    -webkit-backdrop-filter:blur(14px) saturate(180%);
+    color:var(--bg-3);
+    border:1px solid rgba(255,255,255,.32);
     border-radius:9999px;
     text-decoration:none;
-    box-shadow:0 4px 18px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.06);
+    box-shadow:0 8px 24px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.5);
     transition:transform .2s var(--ease), background .2s var(--ease);
   }
-  .cta-fab:hover{ transform:scale(1.08); background:rgba(255,255,255,.92); }
+  .cta-fab:hover{ transform:scale(1.08); background:rgba(255,255,255,.95); }
   .cta-fab svg{ width:1.25rem; height:1.25rem; fill:var(--bg-3); }
   @media(min-width:720px){
     .cta-fab{ width:3.25rem; height:3.25rem; }
@@ -349,44 +353,48 @@
   <button class="nav-dot" data-target="s08"></button>
 </nav>
 
-<!-- 01 — Bootstrap (49 milyon ≠ 15 milyon vurgulu açılış) -->
+<!-- 01 — Bootstrap (Toplam 49M, sermaye 15M, sistem 34M üretir) -->
 <section id="s01" class="sec sec-bg-3">
   <div class="wrap-wide">
     <div class="sec-num reveal"><span class="sec-num-bar"></span><span class="num">01</span></div>
     <div class="eyebrow reveal d1">Bootstrap</div>
 
-    <h2 class="reveal d2" style="font-size:clamp(3rem,11vw,5.5rem); font-weight:600; line-height:1.05; letter-spacing:-.025em">
-      <span style="text-decoration:line-through; text-decoration-thickness:.08em; text-decoration-color:rgba(226,114,58,.8); color:var(--t3); display:inline-block">49 milyon ₺</span>
-      <span style="font-weight:300; color:var(--t2)"> değil.</span><br>
-      Sadece <span class="accent">15 milyon ₺</span> yeter.
+    <h2 class="reveal d2" style="font-size:clamp(2.75rem,9vw,4.75rem); font-weight:600; line-height:1.08; letter-spacing:-.025em">
+      <span style="font-weight:300; color:var(--t2)">Toplam</span> <span class="num" style="color:var(--warn)">49 milyon ₺</span> <span style="font-weight:300; color:var(--t2)">harcanır.</span><br>
+      Cebinizden sadece <span class="accent num">15 milyon ₺</span>.
     </h2>
 
     <p class="lead reveal d3" style="margin-top:1.5rem; font-size:clamp(1.625rem,3vw,1.875rem); color:var(--t2)">
-      Klasik bir başlangıç planı ~<span class="num" style="color:var(--warn)">49M ₺</span> sermaye gerektirir. <span class="accent">arsam.net</span>, teknopark muafiyeti + atomik ağ + lean ekip ile bu rakamı <span class="accent num">%69</span> düşürdü. Cebinizden sadece <span class="accent num">15M ₺</span> çıkacak; gerisi sistemin kendisinden.
+      <span class="accent num">15M ₺</span> sermaye — ilk kurulum + 18 ay başabaş eşiği. Geri kalan <span class="secondary num">34M ₺</span>'yi sistem kendi cirosundan öder. <span class="accent">Kötümser senaryoda bile</span> 2027 sonu ciro <span class="accent num">259M ₺</span>.
     </p>
 
-    <!-- Karşılaştırma · klasik vs arsam.net -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-10">
-      <div class="card card-warn reveal d2" style="padding:2.5rem; opacity:.7">
-        <p class="meta" style="letter-spacing:.08em; text-transform:uppercase; color:var(--t3)">Klasik beklenti</p>
-        <h3 class="num mt-3" style="font-size:clamp(2.5rem,7vw,3.5rem); font-weight:700; color:var(--warn); line-height:1.05; text-decoration:line-through; text-decoration-thickness:.06em; text-decoration-color:rgba(226,114,58,.55)">49.000.000 ₺</h3>
-        <p class="lead mt-3" style="color:var(--t2)">Sektör normu · 18 ay başlangıç sermayesi</p>
+    <!-- Para akışı · 3 kademe -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-10">
+      <div class="card card-grass reveal d2" style="padding:2.5rem; box-shadow:0 0 60px rgba(124,179,66,.2); position:relative">
+        <p class="meta" style="letter-spacing:.1em; text-transform:uppercase; color:var(--t3)">1 · Sermaye · cepten</p>
+        <h3 class="num mt-3" style="font-size:clamp(2.5rem,6vw,3.25rem); font-weight:700; color:var(--grass); line-height:1.05; letter-spacing:-.02em">15.000.000 ₺</h3>
+        <p class="lead mt-3" style="color:var(--t2); font-size:1.5rem">İlk kurulum + 18 ay. Başabaş eşiği bu rakamla aşılır.</p>
       </div>
-      <div class="card card-grass reveal d3" style="padding:2.5rem; box-shadow:0 0 60px rgba(124,179,66,.18)">
-        <p class="meta" style="letter-spacing:.08em; text-transform:uppercase; color:var(--t3)">arsam.net bootstrap</p>
-        <h3 class="num mt-3" style="font-size:clamp(2.75rem,8vw,4rem); font-weight:700; color:var(--grass); line-height:1.05; letter-spacing:-.02em">15.000.000 ₺</h3>
-        <p class="lead mt-3" style="color:var(--t2)">İlk kurulum + 18 ay işletme · başabaş eşiği</p>
+      <div class="card card-gold reveal d3" style="padding:2.5rem; box-shadow:0 0 60px rgba(204,153,0,.18)">
+        <p class="meta" style="letter-spacing:.1em; text-transform:uppercase; color:var(--t3)">2 · Operasyondan</p>
+        <h3 class="num mt-3" style="font-size:clamp(2.5rem,6vw,3.25rem); font-weight:700; color:var(--gold); line-height:1.05; letter-spacing:-.02em">34.000.000 ₺</h3>
+        <p class="lead mt-3" style="color:var(--t2); font-size:1.5rem">18 ay sonrası gider, sistemin kendi cirosundan karşılanır.</p>
+      </div>
+      <div class="card reveal d4" style="padding:2.5rem; opacity:.85">
+        <p class="meta" style="letter-spacing:.1em; text-transform:uppercase; color:var(--t3)">3 · Toplam · 2027 sonu</p>
+        <h3 class="num mt-3" style="font-size:clamp(2.5rem,6vw,3.25rem); font-weight:700; color:var(--t1); line-height:1.05; letter-spacing:-.02em">49.000.000 ₺</h3>
+        <p class="lead mt-3" style="color:var(--t2); font-size:1.5rem">Sermaye (cep) + sistemin ürettiği gelir.</p>
       </div>
     </div>
 
-    <!-- Tasarruf banner -->
-    <div class="reveal d4" style="margin-top:2.5rem; padding:2.5rem 1.5rem; text-align:center; border:1px solid rgba(204,153,0,.4); border-radius:.75rem; background:linear-gradient(180deg, rgba(204,153,0,.1), rgba(204,153,0,.02))">
-      <p class="meta" style="letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:.75rem">Fark · Tasarruf</p>
-      <p class="num" style="font-size:clamp(3rem,9vw,5rem); font-weight:700; color:var(--gold); letter-spacing:-.02em; line-height:1; text-shadow:0 0 48px rgba(204,153,0,.32)">
-        34 milyon ₺
+    <!-- 2027 ciro banner -->
+    <div class="reveal d4" style="margin-top:2.5rem; padding:2.5rem 1.5rem; text-align:center; border:1px solid rgba(124,179,66,.45); border-radius:.75rem; background:linear-gradient(180deg, rgba(124,179,66,.12), rgba(124,179,66,.02))">
+      <p class="meta" style="letter-spacing:.14em; text-transform:uppercase; color:var(--gold); margin-bottom:.75rem">2027 sonu · kötümser senaryo</p>
+      <p class="num" style="font-size:clamp(3rem,9vw,5rem); font-weight:700; color:var(--grass); letter-spacing:-.02em; line-height:1; text-shadow:0 0 48px rgba(124,179,66,.4)">
+        259 milyon ₺ ciro
       </p>
       <p class="lead" style="margin-top:1rem; color:var(--t2); font-size:clamp(1.5rem,2.6vw,1.75rem)">
-        %69 daha az sermaye · aynı 18 ay · aynı çıktı
+        49M harcandıktan sonra net <span class="accent num">~210 milyon ₺</span>. İyimser senaryoda 823M ₺ ciro.
       </p>
     </div>
 
@@ -410,8 +418,8 @@
       </div>
     </div>
 
-    <!-- 15M ₺ nasıl harcanıyor -->
-    <h3 class="mt-12 mb-4 reveal d3" style="font-size:clamp(1.875rem,4vw,2.25rem)">15 milyon ₺ nasıl harcanıyor?</h3>
+    <!-- Gider kalemleri -->
+    <h3 class="mt-12 mb-4 reveal d3" style="font-size:clamp(1.875rem,4vw,2.25rem)">Gider kalemleri</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 reveal d3">
       <div class="card">
         <p class="meta">01</p>
@@ -441,7 +449,7 @@
     </div>
 
     <p class="lead reveal d4" style="margin-top:2.5rem; color:var(--t2)">
-      <span class="accent">15 milyon ₺ yatırım</span>, sonra giderleri kendisi karşılayan sistem. Cebinizden sadece <span class="accent num">15 milyon ₺</span> çıkacak.
+      <span class="accent">15 milyon ₺ yatırım</span>, sonra giderleri kendi cirosundan karşılayan sistem. Cebinizden sadece <span class="accent num">15 milyon ₺</span> çıkacak.
     </p>
   </div>
 </section>
