@@ -68,8 +68,9 @@
     100% { background-position:320px 320px; }
   }
 
-  /* Section içerikleri zemin desenin üstünde kalır */
-  .sec, header.site-header, nav.nav-dots, aside.cta-stack, div.progress{ position:relative; z-index:2; }
+  /* Section içerikleri zemin desenin üstünde kalır.
+     (Header, nav-dots, cta-stack, progress zaten position:fixed + yüksek z-index ile katmanlanmış.) */
+  .sec{ position:relative; z-index:2; }
 
   /* Reduce-motion: deseni durdur */
   @media (prefers-reduced-motion: reduce){
@@ -597,9 +598,9 @@
       </div>
     </div>
 
-    <!-- Gider kalemleri -->
+    <!-- Gider kalemleri (12-col grid, her kart 6/12 = ikili düzen) -->
     <h3 class="mt-12 mb-4 reveal d3" style="font-size:clamp(1.875rem,4vw,2.25rem)">Gider kalemleri</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 reveal d3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 reveal d3">
       <div class="card">
         <p class="meta">01</p>
         <h3 class="secondary mt-2">Personel</h3>
