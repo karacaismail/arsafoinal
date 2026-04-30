@@ -107,23 +107,11 @@
     transition:border-color .25s var(--ease), color .25s var(--ease);
   }
   .pill:hover{ border-color:var(--gold); color:var(--t1); }
-  .pill-featured{
-    background:linear-gradient(135deg, rgba(124,179,66,.22), rgba(124,179,66,.08));
-    border-color:var(--grass);
-    color:var(--grass);
-    font-weight:600;
-    box-shadow:0 0 24px rgba(124,179,66,.18);
-  }
-  .pill-featured:hover{ border-color:var(--grass); color:var(--grass); }
-  /* Stagger fade-out — sadece pill-row '.in' olduğunda tetiklenir */
-  .pill-fade{ transition:opacity 1s var(--ease), filter 1s var(--ease), transform 1s var(--ease); }
-  .pill-row.in .pill-fade{
-    opacity:.14;
-    filter:blur(2.4px);
-    transform:scale(.96) translateY(2px);
-    pointer-events:none;
-    transition-delay:calc(var(--fd, 0) * .14s + 1.6s);
-  }
+
+  /* Kademeli bulanıklık — default olarak sabit, scroll/zaman bağımlı değil */
+  .pill-soft { opacity:.62; filter:blur(1.2px); pointer-events:none; }
+  .pill-blur { opacity:.4;  filter:blur(2.6px); pointer-events:none; }
+  .pill-veil { opacity:.2;  filter:blur(5px);   pointer-events:none; }
 
   /* Kalıcı veiled state — son 2 stratejik kart başından itibaren bulanık.
      "Kalan stratejiler gizli — sadece bunları gösteriyoruz" mesajı. */
@@ -234,18 +222,18 @@
       Yasal teşviklerle desteklenen verimlilik: Ar-Ge stopaj teşviklerinin doğrudan teknopark sayesinde karlılığa pozitif etkisi.
     </p>
     <div class="pill-row reveal d2" style="margin-top:1.25rem">
-      <span class="pill pill-featured">Bilişim Vadisi</span>
-      <span class="pill pill-fade" style="--fd:0">İstanbul Aydın Üni.</span>
-      <span class="pill pill-fade" style="--fd:1">Zaim Üni.</span>
-      <span class="pill pill-fade" style="--fd:2">Entertech İstanbul Teknokent</span>
-      <span class="pill pill-fade" style="--fd:3">YTÜ Yıldız Teknopark</span>
-      <span class="pill pill-fade" style="--fd:4">İTÜ ARI Teknokent</span>
-      <span class="pill pill-fade" style="--fd:5">ODTÜ Teknokent</span>
-      <span class="pill pill-fade" style="--fd:6">Teknopark İstanbul</span>
-      <span class="pill pill-fade" style="--fd:7">Hacettepe Teknokent</span>
-      <span class="pill pill-fade" style="--fd:8">Cyberpark Bilkent</span>
-      <span class="pill pill-fade" style="--fd:9">Sabancı Teknopark</span>
-      <span class="pill pill-fade" style="--fd:10">Marmara Teknopark</span>
+      <span class="pill">İstanbul Aydın Üni.</span>
+      <span class="pill">Zaim Üni.</span>
+      <span class="pill">Entertech İstanbul Teknokent</span>
+      <span class="pill">YTÜ Yıldız Teknopark</span>
+      <span class="pill">İTÜ ARI Teknokent</span>
+      <span class="pill">ODTÜ Teknokent</span>
+      <span class="pill">Teknopark İstanbul</span>
+      <span class="pill pill-soft">Hacettepe Teknokent</span>
+      <span class="pill pill-soft">Cyberpark Bilkent</span>
+      <span class="pill pill-blur">Sabancı Teknopark</span>
+      <span class="pill pill-blur">Marmara Teknopark</span>
+      <span class="pill pill-veil">Bilişim Vadisi</span>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
