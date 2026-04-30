@@ -33,6 +33,24 @@
     --glass-edge-hi:rgba(255,255,255,.24);
     --glass-spec:rgba(255,255,255,.18);
     --glass-shade:rgba(0,0,0,.28);
+
+    /* === FAZ 1 · Radius felsefesi · concentricity + squircle smoothing
+       Bu tier'lar OPT-IN. Mevcut hiçbir component otomatik migrate olmaz.
+       Migration FAZ 4'te component-by-component yapılır. === */
+    --radius-root:    1rem;                                /* mastar (shell köşe radius'u) */
+    --radius-shell:   var(--radius-root);                  /* 1.0× → top-level (.card) */
+    --radius-surface: calc(var(--radius-root) * 0.75);     /* 0.75× → banner / blockquote / chart-box */
+    --radius-control: calc(var(--radius-root) * 0.5);      /* 0.5× → button / logo / cta */
+    --radius-micro:   calc(var(--radius-root) * 0.25);     /* 0.25× → sub-pixel detay */
+    --radius-chip:    9999px;                              /* özel — full pill */
+    --radius-dot:     50%;                                 /* özel — full circle */
+    --corner-smoothing: 0.6;                               /* iOS squircle ~yaklaşımı (FAZ 2 SVG mask için) */
+
+    /* Concentric inner-radius derivatives — yaygın .card padding senaryoları
+       radiusInner(outer, padding) = max(0, outer - padding) */
+    --radius-inner-shell-1_75: max(0px, calc(var(--radius-shell) - 1.75rem));
+    --radius-inner-shell-2_25: max(0px, calc(var(--radius-shell) - 2.25rem));
+    --radius-inner-shell-2_5:  max(0px, calc(var(--radius-shell) - 2.5rem));
   }
 
   *{ -webkit-tap-highlight-color:transparent; }
@@ -1160,6 +1178,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.min.js"></script>
 
 <script>
+/* === FAZ 1 · Radius felsefesi · helper + smoke tests ===
+   - window.arsam.radiusInner(outer, padding): concentric nesting matematiği.
+   - Bu helper ve token'lar OPT-IN — hiçbir mevcut component'a otomatik bağlanmaz. */
+window.arsam = window.arsam || {};
+window.arsam.radiusInner = function(outer, padding){
+  if(typeof outer !== 'number' || typeof padding !== 'number'){
+    throw new TypeError('radiusInner: outer and padding must be numbers');
+  }
+  return Math.max(outer - padding, 0);
+};
+
+(function radiusSmokeTests(){
+  // Helper math
+  const r = window.arsam.radiusInner;
+  console.assert(r(16, 8)  === 8,  '[FAZ1] radiusInner(16,8) === 8');
+  console.assert(r(16, 24) === 0,  '[FAZ1] radiusInner(16,24) === 0  (clamped)');
+  console.assert(r(0, 0)   === 0,  '[FAZ1] radiusInner(0,0) === 0');
+  console.assert(r(1, 0)   === 1,  '[FAZ1] radiusInner(1,0) === 1');
+  console.assert(r(12, 12) === 0,  '[FAZ1] radiusInner(12,12) === 0');
+  // Token okuma
+  const root = getComputedStyle(document.documentElement);
+  const tok  = (k) => root.getPropertyValue(k).trim();
+  console.assert(tok('--radius-root')      === '1rem',   '[FAZ1] --radius-root === 1rem');
+  console.assert(tok('--radius-chip')      === '9999px', '[FAZ1] --radius-chip === 9999px');
+  console.assert(tok('--radius-dot')       === '50%',    '[FAZ1] --radius-dot === 50%');
+  console.assert(tok('--corner-smoothing') === '0.6',    '[FAZ1] --corner-smoothing === 0.6');
+})();
+
 class RevealController {
   constructor(){
     this.io = new IntersectionObserver(this.cb.bind(this), { threshold:.12, rootMargin:'0px 0px -8% 0px' });
