@@ -193,9 +193,127 @@
     *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
     .reveal{ opacity:1 !important; transform:none !important; }
   }
+
+  /* ==== Site header (mobile-first) ==== */
+  .site-header{
+    position:fixed; top:0; left:0; right:0; z-index:70;
+    background:rgba(15,10,7,.78);
+    backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+    border-bottom:1px solid var(--line-1);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:.75rem; max-width:1280px; margin:0 auto;
+    padding:.75rem 1rem;
+  }
+  .brand{
+    display:inline-flex; align-items:center; gap:.625rem;
+    text-decoration:none; color:var(--t1); font-weight:600;
+  }
+  .brand-logo{
+    width:2rem; height:2rem; border-radius:.5rem;
+    background:var(--grass); color:#0f0a07;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:1.25rem;
+  }
+  .brand-name{ font-size:1.5rem; letter-spacing:-.01em; }
+  .header-nav{
+    position:fixed; top:60px; left:0; right:0;
+    flex-direction:column; gap:0;
+    background:rgba(15,10,7,.96);
+    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--line-1);
+    padding:.5rem 1rem 1rem;
+    max-height:calc(100vh - 60px); overflow-y:auto;
+    display:none;
+  }
+  .header-nav.open{ display:flex; }
+  .header-nav a{
+    display:block; padding:1rem .5rem;
+    color:var(--t2); text-decoration:none;
+    font-size:1.5rem; font-weight:500;
+    border-bottom:1px solid var(--line-1);
+    transition:color .2s var(--ease);
+  }
+  .header-nav a:last-child{ border-bottom:none; }
+  .header-nav a:hover{ color:var(--gold); }
+  .header-nav a.active{ color:var(--gold); }
+  .header-actions{
+    display:flex; align-items:center; gap:.5rem;
+  }
+  .header-cta{
+    display:inline-flex; align-items:center; gap:.375rem;
+    padding:.5rem .875rem;
+    background:var(--grass); color:#0f0a07;
+    text-decoration:none; border-radius:.5rem;
+    font-weight:600; font-size:1.375rem;
+    transition:background .25s var(--ease);
+  }
+  .header-cta:hover{ background:var(--grass-deep); color:#fff; }
+  .header-cta-icon{ display:inline-block; width:1rem; height:1rem; }
+  .header-menu-toggle{
+    width:2.5rem; height:2.5rem;
+    background:transparent; border:1px solid var(--line-2);
+    border-radius:.5rem; cursor:pointer;
+    display:inline-flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:4px;
+    padding:0;
+  }
+  .header-menu-toggle span{
+    display:block; width:1.125rem; height:1.5px;
+    background:var(--t1); border-radius:1px;
+    transition:transform .25s var(--ease), opacity .2s var(--ease);
+  }
+  .header-menu-toggle.open span:nth-child(1){ transform:translateY(5.5px) rotate(45deg); }
+  .header-menu-toggle.open span:nth-child(2){ opacity:0; }
+  .header-menu-toggle.open span:nth-child(3){ transform:translateY(-5.5px) rotate(-45deg); }
+
+  @media(min-width:920px){
+    .header-inner{ padding:.875rem 2rem; }
+    .header-nav{
+      position:static; display:flex; flex-direction:row;
+      background:transparent; backdrop-filter:none;
+      -webkit-backdrop-filter:none; border:none;
+      padding:0; gap:1.75rem; max-height:none; overflow:visible;
+    }
+    .header-nav a{
+      border:none; padding:.5rem 0;
+      font-size:1.375rem;
+    }
+    .header-menu-toggle{ display:none; }
+  }
+  body{ padding-top:60px; }
+  .nav-dots{ top:calc(50% + 30px); }
 </style>
 </head>
 <body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#s01" class="brand">
+      <span class="brand-logo">a</span>
+      <span class="brand-name">arsam.net</span>
+    </a>
+    <nav class="header-nav" id="headerNav">
+      <a href="#s01" data-target="s01">Teknopark</a>
+      <a href="#s02" data-target="s02">Pazar</a>
+      <a href="#s03" data-target="s03">Strateji</a>
+      <a href="#s04" data-target="s04">Bootstrap</a>
+      <a href="#s05" data-target="s05">Roadmap</a>
+      <a href="#s06" data-target="s06">Finansal</a>
+      <a href="#s07" data-target="s07">Teklif</a>
+    </nav>
+    <div class="header-actions">
+      <a href="tel:+905322951080" class="header-cta">
+        <span>Ara</span>
+      </a>
+      <button class="header-menu-toggle" aria-label="Menüyü aç/kapat" id="headerMenuToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
 
 <div class="progress"><div class="progress-fill" id="progress"></div></div>
 
@@ -671,6 +789,7 @@ class RevealController {
 class NavController {
   constructor(){
     this.dots = [...document.querySelectorAll('.nav-dot')];
+    this.headerLinks = [...document.querySelectorAll('.header-nav a[data-target]')];
     this.dots.forEach(d => d.addEventListener('click', () => {
       const t = document.getElementById(d.dataset.target);
       if(t) t.scrollIntoView({ behavior:'smooth' });
@@ -678,7 +797,54 @@ class NavController {
     this.io = new IntersectionObserver(this.cb.bind(this), { threshold:.5 });
     document.querySelectorAll('.sec').forEach(s => this.io.observe(s));
   }
-  cb(es){ es.forEach(e => { if(e.isIntersecting){ const id = e.target.id; this.dots.forEach(d => d.classList.toggle('active', d.dataset.target === id)); } }); }
+  cb(es){
+    es.forEach(e => {
+      if(e.isIntersecting){
+        const id = e.target.id;
+        this.dots.forEach(d => d.classList.toggle('active', d.dataset.target === id));
+        this.headerLinks.forEach(a => a.classList.toggle('active', a.dataset.target === id));
+      }
+    });
+  }
+}
+
+class HeaderMenu {
+  constructor(){
+    this.toggle = document.getElementById('headerMenuToggle');
+    this.nav = document.getElementById('headerNav');
+    if(!this.toggle || !this.nav) return;
+    this.toggle.addEventListener('click', () => this.toggleOpen());
+    // Close menu when a nav link is clicked (mobile)
+    this.nav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => this.close());
+    });
+    // Close on outside click
+    document.addEventListener('click', e => {
+      if(!this.toggle.contains(e.target) && !this.nav.contains(e.target)) this.close();
+    });
+    // Close on resize to desktop
+    window.addEventListener('resize', () => {
+      if(window.innerWidth >= 920) this.close();
+    });
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape') this.close();
+    });
+  }
+  toggleOpen(){
+    const isOpen = this.nav.classList.contains('open');
+    if(isOpen) this.close(); else this.open();
+  }
+  open(){
+    this.nav.classList.add('open');
+    this.toggle.classList.add('open');
+    this.toggle.setAttribute('aria-expanded','true');
+  }
+  close(){
+    this.nav.classList.remove('open');
+    this.toggle.classList.remove('open');
+    this.toggle.setAttribute('aria-expanded','false');
+  }
 }
 
 class ProgressBar {
@@ -933,6 +1099,7 @@ class PitchApp {
   constructor(){
     this.reveal = new RevealController();
     this.nav = new NavController();
+    this.headerMenu = new HeaderMenu();
     this.progress = new ProgressBar();
     this.fomo = new FomoFade();
     this.subliminal = new Subliminal();
