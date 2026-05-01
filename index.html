@@ -456,10 +456,6 @@
   .nav-dot:hover .nav-dot-num,
   .nav-dot:hover .nav-dot-label{ color:var(--t1); }
 
-  /* Section-içi başlıklar (sec-num + eyebrow) tüm viewport'larda gizli —
-     bölüm kimliği artık tek kaynaktan: sol dot-nav (>=1100px) veya header (mobil). */
-  .sec-num,
-  .sec-num + .eyebrow{ display:none; }
   /* Mobil ve dar desktop: nav-dots gizlenir (header hamburger zaten var) */
   @media(max-width:1100px){
     .nav-dots{ display:none; }
@@ -480,6 +476,12 @@
 
   .sec-num{ display:inline-flex; align-items:center; gap:.75rem; font-size:1.5rem; color:var(--t3); margin-bottom:1.5rem; letter-spacing:.1em; }
   .sec-num-bar{ width:2.5rem; height:1px; background:var(--gold); }
+
+  /* Section-içi başlıklar (sec-num + ardışık eyebrow) — TÜM VIEWPORT'larda gizli.
+     Bölüm kimliği tek kaynaktan: sol dot-nav (>=1100px) veya header (mobil).
+     Bu kural önceki .sec-num definition'larını override etmek için bilinçli SONRADA. */
+  .sec-num,
+  .sec-num + .eyebrow{ display:none !important; }
 
   /* Subliminal kapanış — sessizce solan metin, gizli nefes */
   .breathe{ animation:breathe 4s ease-in-out infinite; }
