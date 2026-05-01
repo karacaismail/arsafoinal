@@ -401,10 +401,71 @@
   .btn-ghost{ background:transparent; color:var(--t1); border:1px solid var(--line-3); }
   .btn-ghost:hover{ border-color:var(--gold); color:var(--gold); }
 
-  .nav-dots{ position:fixed; left:1rem; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:.75rem; z-index:50; }
-  .nav-dot{ width:10px; height:10px; border-radius:var(--radius-dot);  /* FAZ 4 · token */ background:var(--line-2); border:none; cursor:pointer; transition:all .2s var(--ease); }
-  .nav-dot.active{ background:var(--gold); transform:scale(1.4); }
-  @media(max-width:720px){ .nav-dots{ display:none; } }
+  /* Sol-yan bölüm navigasyonu — dot + section number + label, integrated */
+  .nav-dots{
+    position:fixed; left:.75rem; top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:.5rem; z-index:50;
+    padding:.75rem .625rem;
+    background:rgba(15,10,7,.45);
+    backdrop-filter:blur(16px) saturate(160%);
+    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    border:1px solid var(--glass-edge);
+    border-radius:var(--radius-surface);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.06),
+      0 8px 24px rgba(0,0,0,.28);
+  }
+  .nav-dot{
+    display:flex; align-items:center; gap:.7rem;
+    padding:.35rem .55rem;
+    background:transparent; border:none; cursor:pointer;
+    border-radius:var(--radius-control);
+    transition:background .25s var(--ease);
+    text-align:left;
+  }
+  .nav-dot:hover{ background:rgba(255,255,255,.04); }
+  .nav-dot-circle{
+    flex-shrink:0;
+    width:8px; height:8px;
+    border-radius:var(--radius-dot);
+    background:var(--line-2);
+    transition:all .2s var(--ease);
+  }
+  .nav-dot.active .nav-dot-circle{
+    background:var(--gold);
+    transform:scale(1.5);
+    box-shadow:0 0 12px rgba(204,153,0,.55);
+  }
+  .nav-dot-num{
+    font-family:'Roboto',sans-serif;
+    font-size:.95rem; font-weight:500;
+    color:var(--t4);
+    font-variant-numeric:tabular-nums;
+    min-width:1.2em;
+    transition:color .2s var(--ease);
+  }
+  .nav-dot-label{
+    font-size:.95rem; font-weight:500;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:var(--t3);
+    white-space:nowrap;
+    transition:color .2s var(--ease);
+  }
+  .nav-dot.active .nav-dot-num,
+  .nav-dot.active .nav-dot-label{ color:var(--gold); }
+  .nav-dot:hover .nav-dot-num,
+  .nav-dot:hover .nav-dot-label{ color:var(--t1); }
+
+  /* Mobil ve dar desktop: nav-dots gizlenir, section-içi başlıklar görünür */
+  @media(max-width:1100px){
+    .nav-dots{ display:none; }
+  }
+  /* Geniş desktop: nav-dots görünür + section-içi sec-num & eyebrow gizlenir
+     (header label artık sol yan navigasyonda) */
+  @media(min-width:1100px){
+    .sec-num,
+    .sec-num + .eyebrow{ display:none; }
+  }
 
   .progress{ position:fixed; top:0; left:0; right:0; height:3px; background:transparent; z-index:60; }
   .progress-fill{ height:100%; background:var(--grass); width:0%; transition:width .15s linear; }
@@ -656,15 +717,47 @@
 
 <div class="progress"><div class="progress-fill" id="progress"></div></div>
 
-<nav class="nav-dots">
-  <button class="nav-dot active" data-target="s01"></button>
-  <button class="nav-dot" data-target="s02"></button>
-  <button class="nav-dot" data-target="s03"></button>
-  <button class="nav-dot" data-target="s04"></button>
-  <button class="nav-dot" data-target="s05"></button>
-  <button class="nav-dot" data-target="s06"></button>
-  <button class="nav-dot" data-target="s07"></button>
-  <button class="nav-dot" data-target="s08"></button>
+<nav class="nav-dots" aria-label="Bölüm navigasyonu">
+  <button class="nav-dot active" data-target="s01">
+    <span class="nav-dot-circle"></span>
+    <span class="nav-dot-num">01</span>
+    <span class="nav-dot-label">Bootstrap</span>
+  </button>
+  <button class="nav-dot" data-target="s02">
+    <span class="nav-dot-circle"></span>
+    <span class="nav-dot-num">02</span>
+    <span class="nav-dot-label">Teknopark</span>
+  </button>
+  <button class="nav-dot" data-target="s03">
+    <span class="nav-dot-circle"></span>
+    <span class="nav-dot-num">03</span>
+    <span class="nav-dot-label">Pazar</span>
+  </button>
+  <button class="nav-dot" data-target="s04">
+    <span class="nav-dot-circle"></span>
+    <span class="nav-dot-num">04</span>
+    <span class="nav-dot-label">Strateji</span>
+  </button>
+  <button class="nav-dot" data-target="s05">
+    <span class="nav-dot-circle"></span>
+    <span class="nav-dot-num">05</span>
+    <span class="nav-dot-label">Roadmap</span>
+  </button>
+  <button class="nav-dot" data-target="s06">
+    <span class="nav-dot-circle"></span>
+    <span class="nav-dot-num">06</span>
+    <span class="nav-dot-label">Finansal</span>
+  </button>
+  <button class="nav-dot" data-target="s07">
+    <span class="nav-dot-circle"></span>
+    <span class="nav-dot-num">07</span>
+    <span class="nav-dot-label">Teklif</span>
+  </button>
+  <button class="nav-dot" data-target="s08">
+    <span class="nav-dot-circle"></span>
+    <span class="nav-dot-num">08</span>
+    <span class="nav-dot-label">Kapanış</span>
+  </button>
 </nav>
 
 <!-- 01 — Bootstrap (Toplam 49M, sermaye 15M, sistem 34M üretir) -->
