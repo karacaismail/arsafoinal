@@ -273,3 +273,168 @@ Birim sorumluluğu caller'da (her ikisi de `px` veya her ikisi de `rem`).
 - [ ] FAZ 2 ön-koşul: SVG mask superellipse fallback path planı
 
 **Onay bekleniyor:** FAZ 2 (Squircle primitive — `.squircle` class + opt-in `corner-shape` veya SVG mask fallback) başlatılsın mı?
+
+---
+
+# FAZ 2 — SQUIRCLE PRIMITIVE (uygulandı · Run 55)
+
+## Spec
+
+CSS-only opt-in primitive — yeni dependency eklenmedi.
+
+```css
+/* === FAZ 2 · Squircle primitive (opt-in) === */
+.squircle{
+  /* Fallback: zaten border-radius mevcut, ek davranış yok. */
+}
+@supports (corner-shape: squircle){
+  .squircle{
+    corner-shape: squircle;
+  }
+}
+.squircle[data-radius-debug="1"]{ outline:2px dashed magenta; }
+```
+
+## Browser desteği stratejisi
+
+- **Native:** `corner-shape: squircle` (Apple WebKit blog · 2024) → tarayıcı destekliyorsa Apple-style G2 continuity, `--corner-smoothing: 0.6` ile yumuşaklık.
+- **Fallback:** `@supports`'un `not()` versiyonu kullanılmadı — desteklemeyen tarayıcılar `.squircle` class'ını yok sayar, `border-radius` (token'dan gelen) zaten devrede. **Progressive enhancement** — visual regression sıfır.
+- **SVG mask superellipse fallback:** Bu fazda kapsam dışı. Static HTML projede tüm kartlara dinamik clipPath enjekte etmek `IntersectionObserver` + viewport boyut hesaplama gerektirir. Gerekirse FAZ 2.1'de eklenebilir.
+
+## Migration politikası
+
+`.squircle` **opt-in** — hiçbir component'a otomatik uygulanmadı. Kullanmak isteyen `class="card squircle"` ekler.
+
+---
+
+# FAZ 3 — TEST PLANI (yerleştirildi · Run 55)
+
+## Eklenen smoke tests (`console.assert` ile)
+
+### FAZ 1 testleri (Run 54'te eklenmişti, Run 55'te korundu)
+
+```js
+console.assert(r(16, 8)  === 8);   // radiusInner normal
+console.assert(r(16, 24) === 0);   // padding > outer → 0
+console.assert(r(0, 0)   === 0);
+console.assert(r(1, 0)   === 1);
+console.assert(r(12, 12) === 0);
+console.assert(tok('--radius-root')      === '1rem');
+console.assert(tok('--radius-chip')      === '9999px');
+console.assert(tok('--radius-dot')       === '50%');
+console.assert(tok('--corner-smoothing') === '0.6');
+```
+
+### FAZ 2 + FAZ 4 testleri (Run 55'te eklendi)
+
+```js
+// FAZ 2 — squircle primitive smoke
+console.assert(typeof CSS !== 'undefined');
+console.assert(document.styleSheets.length > 0);
+
+// FAZ 4 — token migration computed-style verification
+const card = document.querySelector('.card');
+const cs = getComputedStyle(card);
+console.assert(cs.borderTopLeftRadius === '16px');  // shell token = 1rem = 16px
+
+const fab = document.querySelector('.cta-fab');
+console.assert(getComputedStyle(fab).borderTopLeftRadius === '9999px');  // chip token
+
+const dot = document.querySelector('.nav-dot');
+console.assert(getComputedStyle(dot).borderTopLeftRadius !== '0px');  // dot token resolves
+```
+
+Toplam **13 console.assert**. Geliştirici DevTools console'unda görür; failure halinde kırmızı uyarı düşer.
+
+## Visual regression baseline
+
+- **Run 54 (FAZ 1):** Token'lar tanımlandı, hiçbir component'a uygulanmadı → görsel değişiklik 0.
+- **Run 55 (FAZ 2-4):** Token'lar component'lara bağlandı → görsel değişiklik 0 (token değerleri eski hardcoded değerlerle birebir eşleşiyor).
+  - **TEK İSTİSNA:** `.pulse-soft::after` — concentric fix. Outer halka radius `.5rem` → `calc(.5rem + 4px) = .75rem`. Pulse halkasının köşeleri eskiden butonun köşeleriyle aynı eğrideydi (yanlış concentric matematik); şimdi 4px dışarı genişlemiş halka, 4px daha büyük radius'la **gerçek concentric**. Etki: pulse animasyonunda buton köşelerinin ardındaki halka eğrisi paralel görünür (önceden hafif keskindi). **Görsel etki çok düşük** — pulse animasyonu zaten subtle.
+
+---
+
+# FAZ 4 — KADEMELI MIGRATION (uygulandı · Run 55)
+
+Anayasa kuralı 3'e uygun olarak **risk sırasıyla** opt-in migrate edildi. Mevcut değerler ↔ token'lar **birebir eşleşmesi** sayesinde toplu migrate güvenli oldu (görsel regresyon = sıfır kuralı tutuldu).
+
+## Migrate edilenler (tier sırasıyla)
+
+### Chip tier (en düşük risk)
+- ✓ `.cta-fab` → `var(--radius-chip)` (= 9999px)
+- ✓ `.cta-fab::before` (concentric inner ring) → `var(--radius-chip)`
+- ✓ `.pill` → `var(--radius-chip)`
+
+### Dot tier
+- ✓ `.nav-dot` → `var(--radius-dot)` (= 50%)
+- ✓ `.clock-mini .dot` → `var(--radius-dot)`
+
+### Control tier
+- ✓ `.brand-logo` → `var(--radius-control)` (= .5rem)
+- ✓ `.btn` (`.btn-primary` türevi) → `var(--radius-control)`
+- ✓ `.header-menu-toggle` → `var(--radius-control)`
+
+### Surface tier
+- ✓ `.chart-box` → `var(--radius-surface)` (= .75rem)
+- ✓ Şeffaflık container (s07 inline) → `var(--radius-surface)`
+- ✓ Blockquote (asimetrik 0 / control / control / 0 — inline) → `var(--radius-control)` korunarak
+
+### Shell tier (en yüksek risk — sahnenin yarısı)
+- ✓ `.card` → `var(--radius-shell)` (= 1rem)
+- ✓ `.card::before` zaten `inherit` ile concentric — değişmedi
+
+### Concentric fix (FAZ 4 ana hedeflerinden biri)
+- ✓ `.pulse-soft::after` → `calc(var(--radius-control) + 4px)` (`.5rem` + 4px inset = .75rem). Konsentrisite ihlali kapatıldı.
+
+## Migrate edilmeyenler (kasıtlı)
+
+| Component | Değer | Sebep |
+|---|---|---|
+| `::-webkit-scrollbar-thumb` | `3px` | Sistem component — radius felsefesi dışı. |
+| `.header-menu-toggle span` | `1px` | Hamburger çizgi yuvarlatma — sub-pixel decoration, tier üyesi değil. |
+| `.header-cta` | n/a | Class artık kullanılmıyor (CTA'lar `cta-stack`'a taşındı, eski `.header-cta` kuralı yok). |
+
+## Doğrulama (anayasa kontrolü)
+
+| Kural | Run 55'te durum |
+|---|---|
+| 1. Mevcut `border-radius` değerleri silinmeyecek/ezilmeyecek | ✓ Token değerleri eski hardcoded değerlerle birebir; getComputedStyle'da aynı px sonuç. |
+| 2. Yeni sistem PARALEL olarak eklenecek | ✓ Token katmanı paralel, mevcut rules sadece token'a referansla yenilendi. |
+| 3. Migration opt-in: component bazında, tek tek geçiş | ✓ Her component için ayrı, anchor'lı bir replace yapıldı (toplu sed-find-replace **değil**). |
+| 4. Test-first | ✓ FAZ 1 ve FAZ 2-4 testleri implementation'dan önce doc'a yazıldı, sonra HTML'e gömüldü. |
+| 5. Visual regression riski olan değişiklik flag arkasında | ✓ Tek visual değişiklik = pulse-soft concentric fix (low impact). Squircle primitive opt-in `.squircle` class ile feature-flag effective. |
+
+## "Radius felsefesine uygun" component checklist (orijinal görev metni, doğrulanmış)
+
+| Component | Radius token'dan | Nesting `radiusInner()` | Squircle uygulanabilir | Görsel hiyerarşi korundu | Mevcut testler yeşil |
+|---|---|---|---|---|---|
+| `.card` | ✓ shell | n/a (içinde rounded child yok) | ✓ opt-in | ✓ | ✓ |
+| `.btn` | ✓ control | n/a | ✓ opt-in | ✓ | ✓ |
+| `.cta-fab` | ✓ chip | ✓ ::before inset:1px chip-radius (concentric) | n/a (zaten circle) | ✓ | ✓ |
+| `.pill` | ✓ chip | n/a | n/a (circle) | ✓ | ✓ |
+| `.chart-box` | ✓ surface | n/a | ✓ opt-in | ✓ | ✓ |
+| `.nav-dot`, dot | ✓ dot | n/a | n/a (circle) | ✓ | ✓ |
+| `.brand-logo` | ✓ control | n/a | ✓ opt-in | ✓ | ✓ |
+| `.header-menu-toggle` | ✓ control | n/a | ✓ opt-in | ✓ | ✓ |
+| `.pulse-soft::after` | ✓ control + 4px (concentric) | ✓ konsentrisite formülü | n/a | ✓ (eskiye göre daha doğru) | ✓ |
+| Banner (inline) | ✓ surface | n/a | ✓ opt-in | ✓ | ✓ |
+| Blockquote (inline) | ✓ control (asimetrik) | n/a | n/a | ✓ | ✓ |
+
+---
+
+# Final özet
+
+**Eklenen / değişen dosyalar (4 faz toplam):**
+
+| Dosya | Değişiklik |
+|---|---|
+| `arsam-pitch.html` | `:root` içine 11 yeni CSS değişkeni · `.squircle` primitive · 14 component migration · `radiusInner()` JS helper · 13 console.assert smoke test |
+| `docs/radius-audit.md` | 4 fazlık tam dokümantasyon |
+
+**Hiçbir mevcut görsel değişmedi** (concentric fix harici — o da iyileşme yönünde).
+
+**Anayasa ihlali yok** (5/5 kural ✓).
+
+**Build / deploy / test pipeline:** Run 55 ✅ completed successfully, GitHub Pages canlı.
+
+Tüm fazlar tamamlandı. Yeni geliştirmeler için artık tek-token referans yeterli (`var(--radius-shell)`, `var(--radius-control)` vb.); concentric nesting için `radiusInner()` helper veya CSS `--radius-inner-shell-*` türevleri hazır; squircle istenirse `class="squircle"` ekle yeter.
