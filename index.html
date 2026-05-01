@@ -8,7 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.min.css" rel="stylesheet">
@@ -401,55 +401,63 @@
   .btn-ghost{ background:transparent; color:var(--t1); border:1px solid var(--line-3); }
   .btn-ghost:hover{ border-color:var(--gold); color:var(--gold); }
 
-  /* Sol-yan bölüm navigasyonu — dot + section number + label, integrated */
+  /* Sol-yan bölüm navigasyonu — 2-satırlı küme yapısı:
+     [● 01]              ← üst satır: dot + section number (meta)
+     [BOOTSTRAP]         ← alt satır: section label (Roboto Condensed) */
   .nav-dots{
     position:fixed; left:.75rem; top:50%; transform:translateY(-50%);
-    display:flex; flex-direction:column; gap:.5rem; z-index:50;
-    padding:.75rem .625rem;
-    background:rgba(15,10,7,.45);
-    backdrop-filter:blur(16px) saturate(160%);
-    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    display:flex; flex-direction:column; gap:.6rem; z-index:50;
+    padding:.85rem .75rem;
+    background:rgba(15,10,7,.5);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
     border:1px solid var(--glass-edge);
     border-radius:var(--radius-surface);
     box-shadow:
-      inset 0 1px 0 rgba(255,255,255,.06),
-      0 8px 24px rgba(0,0,0,.28);
+      inset 0 1px 0 rgba(255,255,255,.07),
+      0 10px 28px rgba(0,0,0,.32);
   }
   .nav-dot{
-    display:flex; align-items:center; gap:.7rem;
-    padding:.35rem .55rem;
+    display:flex; flex-direction:column; gap:.18rem;
+    padding:.5rem .65rem;
     background:transparent; border:none; cursor:pointer;
     border-radius:var(--radius-control);
-    transition:background .25s var(--ease);
+    transition:background .3s var(--ease), transform .25s var(--ease);
     text-align:left;
+    min-width:8.5rem;
   }
-  .nav-dot:hover{ background:rgba(255,255,255,.04); }
+  .nav-dot:hover{ background:rgba(255,255,255,.045); }
+  .nav-dot.active{ background:rgba(204,153,0,.07); }
+  .nav-dot-meta{
+    display:flex; align-items:center; gap:.55rem;
+  }
   .nav-dot-circle{
     flex-shrink:0;
-    width:8px; height:8px;
+    width:7px; height:7px;
     border-radius:var(--radius-dot);
     background:var(--line-2);
-    transition:all .2s var(--ease);
+    transition:all .25s var(--ease);
   }
   .nav-dot.active .nav-dot-circle{
     background:var(--gold);
-    transform:scale(1.5);
-    box-shadow:0 0 12px rgba(204,153,0,.55);
+    box-shadow:0 0 12px rgba(204,153,0,.6);
   }
   .nav-dot-num{
-    font-family:'Roboto',sans-serif;
-    font-size:.95rem; font-weight:500;
+    font-family:'Roboto Condensed','Roboto',sans-serif;
+    font-size:.82rem; font-weight:500;
     color:var(--t4);
     font-variant-numeric:tabular-nums;
-    min-width:1.2em;
-    transition:color .2s var(--ease);
+    letter-spacing:.04em;
+    transition:color .25s var(--ease);
   }
   .nav-dot-label{
-    font-size:.95rem; font-weight:500;
+    font-family:'Roboto Condensed','Roboto',sans-serif;
+    font-size:1.05rem; font-weight:600;
     letter-spacing:.14em; text-transform:uppercase;
     color:var(--t3);
     white-space:nowrap;
-    transition:color .2s var(--ease);
+    margin-left:1.05rem;        /* dot+gap kadar içeri — alt satır metin hizası */
+    transition:color .25s var(--ease);
   }
   .nav-dot.active .nav-dot-num,
   .nav-dot.active .nav-dot-label{ color:var(--gold); }
@@ -719,43 +727,59 @@
 
 <nav class="nav-dots" aria-label="Bölüm navigasyonu">
   <button class="nav-dot active" data-target="s01">
-    <span class="nav-dot-circle"></span>
-    <span class="nav-dot-num">01</span>
+    <span class="nav-dot-meta">
+      <span class="nav-dot-circle"></span>
+      <span class="nav-dot-num">01</span>
+    </span>
     <span class="nav-dot-label">Bootstrap</span>
   </button>
   <button class="nav-dot" data-target="s02">
-    <span class="nav-dot-circle"></span>
-    <span class="nav-dot-num">02</span>
+    <span class="nav-dot-meta">
+      <span class="nav-dot-circle"></span>
+      <span class="nav-dot-num">02</span>
+    </span>
     <span class="nav-dot-label">Teknopark</span>
   </button>
   <button class="nav-dot" data-target="s03">
-    <span class="nav-dot-circle"></span>
-    <span class="nav-dot-num">03</span>
+    <span class="nav-dot-meta">
+      <span class="nav-dot-circle"></span>
+      <span class="nav-dot-num">03</span>
+    </span>
     <span class="nav-dot-label">Pazar</span>
   </button>
   <button class="nav-dot" data-target="s04">
-    <span class="nav-dot-circle"></span>
-    <span class="nav-dot-num">04</span>
+    <span class="nav-dot-meta">
+      <span class="nav-dot-circle"></span>
+      <span class="nav-dot-num">04</span>
+    </span>
     <span class="nav-dot-label">Strateji</span>
   </button>
   <button class="nav-dot" data-target="s05">
-    <span class="nav-dot-circle"></span>
-    <span class="nav-dot-num">05</span>
+    <span class="nav-dot-meta">
+      <span class="nav-dot-circle"></span>
+      <span class="nav-dot-num">05</span>
+    </span>
     <span class="nav-dot-label">Roadmap</span>
   </button>
   <button class="nav-dot" data-target="s06">
-    <span class="nav-dot-circle"></span>
-    <span class="nav-dot-num">06</span>
+    <span class="nav-dot-meta">
+      <span class="nav-dot-circle"></span>
+      <span class="nav-dot-num">06</span>
+    </span>
     <span class="nav-dot-label">Finansal</span>
   </button>
   <button class="nav-dot" data-target="s07">
-    <span class="nav-dot-circle"></span>
-    <span class="nav-dot-num">07</span>
+    <span class="nav-dot-meta">
+      <span class="nav-dot-circle"></span>
+      <span class="nav-dot-num">07</span>
+    </span>
     <span class="nav-dot-label">Teklif</span>
   </button>
   <button class="nav-dot" data-target="s08">
-    <span class="nav-dot-circle"></span>
-    <span class="nav-dot-num">08</span>
+    <span class="nav-dot-meta">
+      <span class="nav-dot-circle"></span>
+      <span class="nav-dot-num">08</span>
+    </span>
     <span class="nav-dot-label">Kapanış</span>
   </button>
 </nav>
